@@ -1,4 +1,4 @@
-import { StyleSheet, TextInput, Image, TouchableOpacity, PermissionsAndroid, View, SafeAreaView, Text  } from "react-native"
+import { StyleSheet, Alert, TextInput, Image, TouchableOpacity, PermissionsAndroid, View, SafeAreaView, Text  } from "react-native"
 import React, { useState }  from "react"
 import Fire from "../../../Fire";
 
@@ -47,7 +47,9 @@ export default NewPost =(navigation) => {
 
       handlePost = () => {
        console.log("start handle")
-        Fire.shared.addPost({content:content.trim(), localUri: image})
+       console.log("start handle: content: ",content.trim().toString())
+
+        Fire.shared.addPost({content:content.trim().toString(), localUri: image})
                     .then(ref => {
                         setContent("");
                         setImage(null);
@@ -73,26 +75,8 @@ export default NewPost =(navigation) => {
                             size={24}
                             color="#D8D9DB" />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={
-                   async () => {
-  const path = `photos/`
-  console.log("gia tri uri: ",image )
- 
-      // const response = await fetch(uri);
-      // const file = await response.blob();
-
-     try {
-      let upload = storage().ref(path);
-      await upload.putFile(image)
-      const url = await upload.getDownloadURL(); 
-      console.log("upload thanh cong, path file: ",url)
-     }  catch(err) {
-      console.log("loi upload file: ",err)
-     }
- 
-       
-  
-}
+                <TouchableOpacity onPress={ 
+                 handlePost
                 }>
                     <Text>Post</Text>
                 </TouchableOpacity>
