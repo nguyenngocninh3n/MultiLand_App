@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "960484089829",
+    "project_id": "multiland-2024",
+    "storage_bucket": "multiland-2024.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:960484089829:android:ea8d08a1c579b3e131190c",
+        "android_client_info": {
+          "package_name": "com.multiland"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCdaDuJNB9b_Eel26ZgR6AWeqTTvhSqAQQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:960484089829:android:99699aa6b895f91431190c",
+        "android_client_info": {
+          "package_name": "com.multiland2024"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCdaDuJNB9b_Eel26ZgR6AWeqTTvhSqAQQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
