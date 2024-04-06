@@ -15,21 +15,11 @@ const CreateStory = () => {
   const [user,setUser] = useState({});
 
   useEffect(()=> {
-    firestore()
-  .collection('users')
-  .doc(auth().currentUser.uid)
-  .get()
-  .then(documentSnapshot => {
-    // console.log('User exists: ', documentSnapshot.exists);
-    
-
-    if (documentSnapshot.exists) {
-      // console.log('User data: ', documentSnapshot.data());
-      setUser(documentSnapshot.data())
-    }
+    firestore().collection('users').doc(auth().currentUser.uid).get()
+    .then(documentSnapshot => {
+        if (documentSnapshot.exists) { setUser(documentSnapshot.data())  }
   });
   },[])
-
 
   return (
     <View style={styles.createStoryContainer}>

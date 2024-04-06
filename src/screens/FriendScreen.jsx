@@ -13,7 +13,7 @@ import {FriendData} from '../data/FriendData';
 
 const addFriend = () => {
 
-     Alert.alert('Đã gửi lời mời kết bạn' );
+     Alert.alert('thong bao','Đã gửi lời mời kết bạn' );
 }
 
 

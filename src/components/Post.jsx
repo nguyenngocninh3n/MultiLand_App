@@ -8,12 +8,9 @@ import firestore from '@react-native-firebase/firestore'
 import { FlatList, ScrollView } from 'react-native-gesture-handler';
 
 
-
-
 const Post = () => {
   const [PostData,setPostData] = useState([])
   
-
   useEffect(() => {
     const subscriber = firestore().collection("posts").orderBy('timestamp','desc').onSnapshot((res) => {
       const posts = []

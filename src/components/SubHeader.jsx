@@ -16,10 +16,9 @@ const SubHeader = ({navigation}) => {
   .doc(auth().currentUser.uid)
   .get()
   .then(documentSnapshot => {
-    // console.log('User exists: ', documentSnapshot.exists);
-    
+    console.log('User exists: ', documentSnapshot.exists);
     if (documentSnapshot.exists) {
-      // console.log('User data: ', documentSnapshot.data());
+      console.log('User data: ', documentSnapshot.data());
       setUser(documentSnapshot.data())
     }
   });

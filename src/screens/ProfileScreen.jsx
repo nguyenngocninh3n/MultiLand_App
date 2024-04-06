@@ -15,7 +15,7 @@ const ProfileScreen = (navigation) => {
   const onLogout = () => {
     auth()
       .signOut()
-      .then(() => Alert.alert('User signed out!'))
+      .then(() => Alert.alert('Thong bao','User signed out!'))
       .catch(error => console.log('error :', error));
   };
 

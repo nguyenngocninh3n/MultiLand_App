@@ -25,16 +25,13 @@ class Fire {
     }
 
     addPost  = async ({content, localUri}) => {
-        console.log("start addPost")
         var timePost = +Date.now().toString();
         var postID = this.uid+timePost;
-        const remoteUri = null;
+        var remoteUri = null;
         if(localUri != null) {
-        remoteUri = await this.uploadPhoto(localUri);
-        }        
-       
+        remoteUri = await this.uploadPhoto(localUri);  }        
+        
         return new Promise((res, rej) => {
-        console.log("start promise:")
             firebase.firestore()
             .collection("posts")
             .doc(postID)

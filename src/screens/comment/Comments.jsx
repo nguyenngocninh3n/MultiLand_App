@@ -12,15 +12,6 @@ export default Comments = ({dataPost}) => {
     const [user, setUser] = useState(undefined)
     const [commentContent, setCommentContent] = useState("")
     const[sendComment_state, setSendComment_state] = useState(false)
-    const comment_exp = [{key:1, userName: 'Nguyen Van A', comment: 'vui qua la vui'},
-                         {key:2, userName: 'Bui Thi Xuan', comment: 'di hoc the duc'},
-                         {key:3, userName: 'Le Van Liem 7', comment: 'di choi Vung A'}
-                        ]
-
-
-  useEffect(()=> {
-    GetComments();
-  },[sendComment_state])
 
    useEffect(()=>{
         firestore().collection("comments").where('postID','==',dataPost.postID).onSnapshot((res) => {
@@ -39,10 +30,7 @@ export default Comments = ({dataPost}) => {
             console.log('comments not exists')
           }
           setComments(comment_arr);
-          console.log('noi dung cuar comment_arr: ', comment_arr)
-          console.log('****Noi dung comments: ', comments)
         })
-
    },[])
 
 
@@ -61,12 +49,6 @@ export default Comments = ({dataPost}) => {
     const PostComment = () => {
         let timePost = Date.now();
         let commentID = userID + dataPost.postID + timePost;
-        console.log("===xuat ra thong tin truoc thi them comment: ", 'commentID: ',commentID,
-            'postID:' ,dataPost.postID,
-            'userID:', userID,
-            'userName:', user.name,
-            'dateModified:', timePost,
-            'comment:', commentContent,)
         firestore().collection('comments').doc(commentID)
                     .set({
                         commentID:commentID,
@@ -83,47 +65,6 @@ export default Comments = ({dataPost}) => {
                     setSendComment_state(!sendComment_state)
                 })
                     .catch(error => {console.log(error)})
-    }
-
-    // const GetComments = () => {
-    //     firestore().collection('comments').where('postID','==',dataPost.postID).get()
-    //                .then(documentSnapshot => {
-    //                 if(documentSnapshot.exists) {
-    //                     setComments(documentSnapshot.data())
-    //                     console.log('comments exists')    }
-    //                 else {    console.log("comments not exists")     }
-    //                }).catch( error => {console.log('loi khi get comments: ',error)})
-
-    // }
-
-    const GetComments =() => {
-        const subscriber = firestore().collection("comments").where('postID','==',dataPost.postID).onSnapshot((res) => {
-          const comment_arr = []
-          if(res != null) {
-            console.log('comments exists')
-            res.forEach(documentSnapshot => {
-                console.log("gia tri cac comment: ",documentSnapshot)
-              comment_arr.push({
-                ...documentSnapshot.data(),
-                key: documentSnapshot.data().commentID,
-              });
-            });
-          }
-          else {
-            console.log('comments not exists')
-          }
-          setComments(comment_arr);
-          console.log('noi dung cuar comment_arr: ', comment_arr)
-          console.log('****Noi dung comments: ', comments)
-        })
-    
-      }
-
-    const displayChildComment = (commentData) => {
-        for(let i = 0; i< commentData.length; i++)
-        {
-        
-        }
     }
 
     return (

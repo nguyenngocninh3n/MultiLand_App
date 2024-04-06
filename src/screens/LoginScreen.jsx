@@ -32,14 +32,14 @@ const LoginScreen = ({navigation}) => {
       auth()
         .signInWithEmailAndPassword(email, password)
         .then(response => {
-          Alert.alert("Đang nhập thành công")
+          Alert.alert('Thong bao',"Đang nhập thành công")
 
         })
         .catch(error => {
           if (error.code === 'auth/wrong-password') {
-            Alert.alert('Your password is wrong!');
+            Alert.alert('Thong bao','Your password is wrong!');
           } else {
-            Alert.alert(`${error}`);
+            Alert.alert('Thong bao',`${error}`);
           }
         });
     }

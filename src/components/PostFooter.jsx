@@ -79,16 +79,13 @@ const PostFooter = ({data}) => {
   }
 
   const uploadReaction = () => {
-
-    console.log('kiểm tra reaction_state - ', 'step 1 ', reaction_state)
-    console.log('kiểm tra reaction_state - ', 'step 2 ', reaction_state)
-  
     firestore()
         .collection('reactions').doc(reaction.reactionID)
         .update({  state: reaction_state, })
         .then(() => {  })
         .catch(error => { console.log("loi khi uploadReaction: ", error)  });
   }
+
   const logAllItem =(value) => {
     console.log('=========Sau day la log all item =======')
     console.log("***log cua phan: ",value)
@@ -101,7 +98,6 @@ const PostFooter = ({data}) => {
   }
 
   const uploadAmountReactionInPost = (value) => {
-    // logAllItem("upload ammount reaction post");
     firestore()
         .collection('posts').doc(dataPost.postID)
         .update({  like: dataPost.like+value   })
@@ -109,30 +105,21 @@ const PostFooter = ({data}) => {
         .catch(error => { console.log("loi khi uploadReaction Aomount Post: ", error)  });
     dataPost.like = dataPost.like+value;
   }
+
   const  onReaction = async () => {
     setInit(true)
-    logAllItem('===================onclick=================')
      if((reaction == {} || reaction == undefined ) && init == false) {
-      console.log(".....vao log 1")
       CreateReaction()}
     else {
-    console.log('kiểm tra reaction_state - ', 'step 0 ',reaction_state)
-
-      if(reaction == undefined) GetDataReaction()
-      console.log(".....vao log 2")
+      if(reaction == undefined) GetDataReaction();
       await setReaction_state(reaction_state==true?false:true)
-    console.log('....reaction_state: ',reaction_state)
-     
     }
     
   
   }
 
   const ShowComment = () => {
-    
-  
     return (
-     
       <View  >
         <Modal isVisible={comment_state} 
                animationIn={'slideInUp'}
@@ -141,7 +128,7 @@ const PostFooter = ({data}) => {
                animationOutTiming={900}
                onBackButtonPress={()=>setComment_state(false)}
                onBackdropPress={()=>setComment_state(false)}
-               style={{  marginTop:100, borderRadius:20,backgroundColor:'#fff', width:'95%', }}
+               style={{  marginTop:100, borderRadius:20,backgroundColor:'#fff', width:'90%', }}
         >
           <Comments dataPost = {data} />
         </Modal>
@@ -150,9 +137,7 @@ const PostFooter = ({data}) => {
   }
   
   const  onComment = () => {
-    console.log('....reaction_state: ',reaction_state)
-    console.log("....reaction: ",reaction)
-    setComment_state(true)
+    setComment_state(true);
     
   }
 

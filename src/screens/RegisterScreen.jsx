@@ -34,7 +34,7 @@ const RegisterScreen = ({navigation}) => {
     console.log("===> ",confirmPassword)
 
     if (password !== confirmPassword) {
-      Alert.alert("Password don't match.");
+      Alert.alert('Thong bao',"Password don't match.");
       return;
     }
     if (email && password) { 
@@ -64,7 +64,7 @@ const RegisterScreen = ({navigation}) => {
 
 
     } else {
-      Alert.alert('Please fill in details!');
+      Alert.alert('Thong bao','Please fill in details!');
     }
   };
 

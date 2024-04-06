@@ -16,10 +16,9 @@ const PostHeader = ({data}) => {
   .doc(data.ownerID)
   .get()
   .then(documentSnapshot => {
-    // console.log('User exists: ', documentSnapshot.exists);
-    
+    console.log('User exists: ', documentSnapshot.exists);
     if (documentSnapshot.exists) {
-      // console.log('PostHeader - User exist: ');
+      console.log('PostHeader - User exist: ');
       setUser(documentSnapshot.data())
     }
   });
@@ -44,14 +43,7 @@ const formatDate = (timestamp) => {
             <Text style={styles.username}>{user.name}</Text>
             <View style={styles.row}>
               <Text style={styles.days}>{formatDate(data.timestamp)}</Text>
-             
-              <VectorIcon
-                name="user-friends"
-                type="FontAwesome5"
-                size={13}
-                color={Colors.headerIconGrey}
-                style={styles.userIcon}
-              />
+              
             </View>
           </View>
         </View>
@@ -65,14 +57,17 @@ const styles = StyleSheet.create({
   postHeaderContainer: {
     padding: 16,
   },
+
   userProfile: {
     height: 40,
     width: 40,
     borderRadius: 50,
   },
+
   row: {
     flexDirection: 'row',
   },
+  
   postTopSec: {
     flexDirection: 'row',
     justifyContent: 'space-between',
