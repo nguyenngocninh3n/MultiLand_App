@@ -1,22 +1,46 @@
 import { StyleSheet, Alert, TextInput, Image, TouchableOpacity, PermissionsAndroid, View, SafeAreaView, Text  } from "react-native"
-import React, { useState }  from "react"
+import React, { useState, useEffect }  from "react"
 import Fire from "../../../Fire";
+import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
 
 import Ionicon from "react-native-ionicons"
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {Colors} from "../../utils/Colors"
 
+import AntDesign from 'react-native-vector-icons/dist/AntDesign'
+
 import firebase from '@react-native-firebase/app'
 import storage from '@react-native-firebase/storage'
 
+import VectorIcon from "../../utils/VectorIcon";
 
+import auth from '@react-native-firebase/auth'
+import firestore from '@react-native-firebase/firestore'
+import Icon from "react-native-ionicons";
 
+export default NewPost =({navigation, route}) => {
 
-export default NewPost =(navigation) => {
+  // console.log("navigation in new post - info: ",navigation.goBack())
+  console.log("route in new post - info: ", route)
 
    const [content, setContent] = useState("");
    const [image, setImage] = useState(null);
+   const [image_state, setImage_state] = useState(false)
+   const [user,setUser] = useState({});
 
+  useEffect(()=> {
+    firestore()
+  .collection('users')
+  .doc(auth().currentUser.uid)
+  .get()
+  .then(documentSnapshot => {
+    // console.log('User exists: ', documentSnapshot.exists);
+    if (documentSnapshot.exists) {
+      // console.log('User data: ', documentSnapshot.data());
+      setUser(documentSnapshot.data())
+    }
+  });
+  },[])
 
     const openImage = async () => {
         try {
@@ -32,12 +56,14 @@ export default NewPost =(navigation) => {
             },
           );
           if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-            console.log('You can use the camera');
+            // console.log('You can use the camera');
             // const result = await launchCamera({mediaType:'photo',cameraType:'front'})
             const result = await launchImageLibrary({mediaType:'photo'})
+            setImage_state(true)
             setImage(result.assets[0].uri);
+            
           } else {
-            console.log('Camera permission denied');
+            // console.log('Camera permission denied');
             Alert.alert('Chưa cấp quyền')
           }
         } catch (err) {
@@ -45,24 +71,28 @@ export default NewPost =(navigation) => {
         }
       };
 
-      handlePost = () => {
-       console.log("start handle")
-       console.log("start handle: content: ",content.trim().toString())
+    
+      const post_finish =() => {
+        navigation.navigate('LoginScreen')
+      }
 
-        Fire.shared.addPost({content:content.trim().toString(), localUri: image})
+      handlePost = async () => {
+
+         Fire.shared.addPost({content:content.trim().toString(), localUri: image})
                     .then(ref => {
                         setContent("");
                         setImage(null);
-                  console.log("middle handle")
-
+                        setImage_state(false)
                     })
                     .catch(error => {
                         Alert.alert(error)
-                        console.log("error: " + error)
+                        // console.log("error: " + error)
 
                     })
-
-       console.log("finish handle")
+       try{
+        navigation.goBack();
+       }
+       catch(err) {console.log('lỗi khi navigation sau khi dang bai ', err)}
 
       }
 
@@ -78,11 +108,11 @@ export default NewPost =(navigation) => {
                 <TouchableOpacity onPress={ 
                  handlePost
                 }>
-                    <Text>Post</Text>
+                    <Text style={{fontSize:24, marginRight:20}}>Post</Text>
                 </TouchableOpacity>
             </View>
             <View style={styles.inputContainer}>
-                <Image source={require("../../assets/images/img1.jpeg")} style={styles.avatar} />
+                {/* <Image source={{uri:user.avatar}} style={styles.avatar} /> */}
                 <TextInput
                     onChangeText={ value => {setContent(value)}}
                     autoFocus={true}
@@ -94,11 +124,16 @@ export default NewPost =(navigation) => {
                     />
                    
             </View>
-            <TouchableOpacity style={styles.photo}>
-                <Ionicon onPress={openImage} name="md-camera" size={32} color={Colors.green} />
+            <TouchableOpacity onPress={openImage} style={styles.photo}>
+                <AntDesign
+                                 
+                                  name="picture"
+                                  size={35}
+                                />
             </TouchableOpacity>
             <View>
-                <Image source={{uri:image}}
+                  <Image source={image?{uri:image}:{}} 
+                  
                         style={{width:'100%',
                                 height: '100%',
                                 }} />
@@ -114,8 +149,8 @@ const styles = StyleSheet.create({
     },
     header: {
         flexDirection: 'row',
-        justifyContent: 'space-around',
-        paddingHorizontal:32,
+        justifyContent: 'space-between',
+        paddingHorizontal:10,
         paddingVertical: 12,
         borderBottomWidth:1,
         borderBottomColor: '#d8D9DB'

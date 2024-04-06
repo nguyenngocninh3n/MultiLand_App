@@ -1,15 +1,41 @@
-import {View, TextInput, Image, StyleSheet, Text} from 'react-native';
-import React from 'react';
+import {View, TextInput, Image, StyleSheet, Text, TouchableOpacity} from 'react-native';
+import React, { useEffect, useState } from 'react';
 import Profile from '../assets/images/img1.jpeg';
 import CameraRoll from '../assets/images/cameraroll.png';
 import {Colors} from '../utils/Colors';
 
-const SubHeader = () => {
+import auth from '@react-native-firebase/auth'
+import firestore from '@react-native-firebase/firestore'
+const SubHeader = ({navigation}) => {
+
+  const [user,setUser] = useState({});
+
+  useEffect(()=> {
+    firestore()
+  .collection('users')
+  .doc(auth().currentUser.uid)
+  .get()
+  .then(documentSnapshot => {
+    // console.log('User exists: ', documentSnapshot.exists);
+    
+    if (documentSnapshot.exists) {
+      // console.log('User data: ', documentSnapshot.data());
+      setUser(documentSnapshot.data())
+    }
+  });
+  },[])
+
+  const createNewPost = () =>{
+    navigation.navigate('newpost')
+  }
+
   return (
     <View style={styles.container}>
-      <Image source={Profile} style={styles.profileStyle} />
-      <View style={styles.inputBox}>
+      <Image source={{uri: user.avatar}} style={styles.profileStyle} />
+      <View style={styles.inputBox} >
+        <TouchableOpacity onPress={createNewPost}>
         <Text style={styles.inputStyle}>Thêm nội dung mới...</Text>
+        </TouchableOpacity>
       </View>
       <Image source={CameraRoll} style={styles.cameraRoll} />
     </View>

@@ -13,6 +13,9 @@ import {Colors} from '../utils/Colors';
 import Logo from '../assets/images/logo.png';
 import textLogo from '../assets/images/text-logo.png';
 import auth from '@react-native-firebase/auth';
+import AntDesign from 'react-native-vector-icons/dist/AntDesign'
+
+import firestore from '@react-native-firebase/firestore';
 
 const RegisterScreen = ({navigation}) => {
   const [fullname, setFullname] = useState('');
@@ -34,16 +37,32 @@ const RegisterScreen = ({navigation}) => {
       Alert.alert("Password don't match.");
       return;
     }
-    if (email && password) {
-    console.log("===>  vào mục if")
-      
+    if (email && password) { 
       auth().createUserWithEmailAndPassword(email,password)
         .then(() => {
-          console.log("thanh coong")
-        })
+            firestore()
+                .collection('users')
+                .doc(auth().currentUser.uid)
+                .set({
+                    name: fullname,
+                    email: email,
+                    password: password,
+                    avatar: "https://cdn.sforum.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg",
+                    phoneNumber: "",
+                    sex: true,
+                    birthday: Date.now(),
+                    uid: auth().currentUser.uid,
+                    })
+                .then(() => {
+                    console.log('User added!');
+                });
+            })
+
         .catch(error => {
-          console.error(error);
-        });
+                  console.error(error);
+            });
+
+
     } else {
       Alert.alert('Please fill in details!');
     }
@@ -51,8 +70,8 @@ const RegisterScreen = ({navigation}) => {
 
   return (
     <View style={styles.container}>
-      <VectorIcon
-        name="arrow-back"
+      <AntDesign
+        name="back"
         type="Ionicons"
         color={Colors.black}
         size={20}

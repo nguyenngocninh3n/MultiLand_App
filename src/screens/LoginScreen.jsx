@@ -32,7 +32,8 @@ const LoginScreen = ({navigation}) => {
       auth()
         .signInWithEmailAndPassword(email, password)
         .then(response => {
-          console.log('response :', response);
+          Alert.alert("Đang nhập thành công")
+
         })
         .catch(error => {
           if (error.code === 'auth/wrong-password') {
@@ -40,10 +41,8 @@ const LoginScreen = ({navigation}) => {
           } else {
             Alert.alert(`${error}`);
           }
-          console.log('error :', error);
         });
     }
-    Alert.alert("Đang nhập thành công")
     
   };
 

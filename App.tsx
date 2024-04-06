@@ -12,6 +12,8 @@ const Stack = createStackNavigator();
 
 const App = () => {
 
+
+
   const [user, setUser] = useState();
   const onAuthStateChanged = (user: any) => setUser(user);
 
@@ -19,18 +21,19 @@ const App = () => {
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
     return subscriber;
   }, []);
+  
 
   return (
     <NavigationContainer>
       <StatusBar backgroundColor={Colors.white} barStyle='dark-content' />
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         {user ?
-          <Stack.Screen name="MainScreen" component={MainScreen} />
+          <Stack.Screen name="MainScreen"  component={MainScreen} />
           :
           <>
             <Stack.Screen name="LoginScreen" component={LoginScreen} />
             <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
-            s
+            
           </>
         }
       </Stack.Navigator>

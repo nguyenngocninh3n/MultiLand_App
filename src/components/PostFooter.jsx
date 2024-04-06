@@ -1,12 +1,161 @@
-import {View, Text, Image, StyleSheet} from 'react-native';
-import React from 'react';
+import {View, Text, Image, StyleSheet, Alert} from 'react-native';
+import React, { useEffect, useState } from 'react';
 import Like from '../assets/images/like.jpeg';
 import Shock from '../assets/images/shock.jpeg';
 import Heart from '../assets/images/heart.jpeg';
 import {Colors} from '../utils/Colors';
-import VectorIcon from '../utils/VectorIcon';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import firestore from '@react-native-firebase/firestore'
+import auth from '@react-native-firebase/auth'
+
+import  Modal from 'react-native-modal';
+import Comments from '../screens/comment/Comments';
 
 const PostFooter = ({data}) => {
+
+  const [reaction,setReaction] = useState({})
+  const [reaction_state, setReaction_state] = useState(false)
+  const [userID, setUerID] = useState(auth().currentUser.uid)
+  const [dataPost, setDataPost] = useState(data)
+  const [init,setInit] = useState(false)
+
+  const [comment_state, setComment_state] = useState(false)
+
+
+  useEffect(()=>{GetDataReaction(); logAllItem('...............log flie lan dau............')},[])
+
+  useEffect(()=>{
+    logAllItem('..........kiem tra cap nhat ...........')
+    if(reaction != undefined && init == true) {
+      uploadReaction();
+    
+    }
+    if(init == true) {
+      if(reaction_state == true) {   uploadAmountReactionInPost(1);  }
+      else {   uploadAmountReactionInPost(-1);  }
+    
+    }
+
+  },[reaction_state])
+
+  const CreateReaction = () => {
+    firestore().collection('reactions').doc(userID+dataPost.postID).get()
+                .then(documentSnapshot => {
+                  if(!documentSnapshot.exists) {
+                    let timePost = Date.now().toString();
+                    let reactionID = userID+dataPost.postID;
+                      firestore()
+                            .collection('reactions').doc(reactionID)
+                            .set({
+                                reactionID: reactionID,
+                                postID: dataPost.postID,
+                                state:true,
+                                dateModified: timePost   })
+                            .then( () => {  
+                                // setInit(true)
+                                console.log("tao reaction thanh cong")  
+                                setReaction_state(true) 
+                              })
+                            .catch(error => { console.log("loi khi tao reaction object: ",error)  })                
+                  }  } )
+                .catch(error => {console.log('loi khi tao Reaction: ',error)})
+  }
+
+  const GetDataReaction = () => {
+    firestore()
+        .collection('reactions').doc(userID+dataPost.postID).get()
+        .then(documentSnapshot => { 
+          if(documentSnapshot.exists) {
+            setReaction(documentSnapshot.data() )
+            setReaction_state(documentSnapshot.data().state)
+            console.log("GetDataReaction: Hoan thanh get data")
+          }
+          else {
+            setReaction(undefined)
+            console.log("GetDataReaction:datareaction khong ton tai")
+          }
+        })
+        .catch(error => {console.log('loi khi get data reaction: ',error)})  
+  }
+
+  const uploadReaction = () => {
+
+    console.log('kiểm tra reaction_state - ', 'step 1 ', reaction_state)
+    console.log('kiểm tra reaction_state - ', 'step 2 ', reaction_state)
+  
+    firestore()
+        .collection('reactions').doc(reaction.reactionID)
+        .update({  state: reaction_state, })
+        .then(() => {  })
+        .catch(error => { console.log("loi khi uploadReaction: ", error)  });
+  }
+  const logAllItem =(value) => {
+    console.log('=========Sau day la log all item =======')
+    console.log("***log cua phan: ",value)
+    console.log("userID: ",userID)
+    console.log('reaction: ',reaction)
+    console.log('datapost: ', dataPost)
+    console.log('reaction_state', reaction_state)
+    console.log('=========End log all item =======')
+
+  }
+
+  const uploadAmountReactionInPost = (value) => {
+    // logAllItem("upload ammount reaction post");
+    firestore()
+        .collection('posts').doc(dataPost.postID)
+        .update({  like: dataPost.like+value   })
+        .then(() => {  })
+        .catch(error => { console.log("loi khi uploadReaction Aomount Post: ", error)  });
+    dataPost.like = dataPost.like+value;
+  }
+  const  onReaction = async () => {
+    setInit(true)
+    logAllItem('===================onclick=================')
+     if((reaction == {} || reaction == undefined ) && init == false) {
+      console.log(".....vao log 1")
+      CreateReaction()}
+    else {
+    console.log('kiểm tra reaction_state - ', 'step 0 ',reaction_state)
+
+      if(reaction == undefined) GetDataReaction()
+      console.log(".....vao log 2")
+      await setReaction_state(reaction_state==true?false:true)
+    console.log('....reaction_state: ',reaction_state)
+     
+    }
+    
+  
+  }
+
+  const ShowComment = () => {
+    
+  
+    return (
+     
+      <View  >
+        <Modal isVisible={comment_state} 
+               animationIn={'slideInUp'}
+              //  animationInTiming={300}
+               animationOut={'fadeOutDown'}
+               animationOutTiming={900}
+               onBackButtonPress={()=>setComment_state(false)}
+               onBackdropPress={()=>setComment_state(false)}
+               style={{  marginTop:100, borderRadius:20,backgroundColor:'#fff', width:'95%', }}
+        >
+          <Comments dataPost = {data} />
+        </Modal>
+      </View>
+    )
+  }
+  
+  const  onComment = () => {
+    console.log('....reaction_state: ',reaction_state)
+    console.log("....reaction: ",reaction)
+    setComment_state(true)
+    
+  }
+
   return (
     <View style={styles.postFotterContainer}>
       <View style={styles.footerReactionSec}>
@@ -14,40 +163,34 @@ const PostFooter = ({data}) => {
           <Image source={Like} style={styles.reactionIcon} />
           <Image source={Shock} style={styles.reactionIcon} />
           <Image source={Heart} style={styles.reactionIcon} />
-          <Text style={styles.reactionCount}>{data.reactionCount}</Text>
+          <Text style={styles.reactionCount}>{data.like} likes</Text>
         </View>
         <Text style={styles.reactionCount}>{data.comments} comments</Text>
       </View>
       <View style={styles.userActionSec}>
-        <View style={styles.row}>
-{/*          <VectorIcon */}
-{/*             name="like2" */}
-{/*             type="AntDesign" */}
-{/*             size={25} */}
-{/*             color={Colors.grey} */}
-{/*           /> */}
-          <Text style={styles.reactionCount}>Like</Text>
+        <View  style={styles.row}>
+          <TouchableOpacity onPress={onReaction}
+            style={{backgroundColor:reaction_state?Colors.primaryColor:Colors.white}} 
+            >
+          <Text  style={styles.reactionCount}>Like</Text>
+          </TouchableOpacity>
         </View>
         <View style={styles.row}>
-{/*           <VectorIcon */}
-{/*             name="chatbox-outline" */}
-{/*             type="Ionicons" */}
-{/*             size={25} */}
-{/*             color={Colors.grey} */}
-{/*           /> */}
+          <TouchableOpacity onPress={onComment}>
           <Text style={styles.reactionCount}>Comment</Text>
+          </TouchableOpacity>
         </View>
 
         <View style={styles.row}>
-{/*           <VectorIcon */}
-{/*             name="arrow-redo-outline" */}
-{/*             type="Ionicons" */}
-{/*             size={25} */}
-{/*             color={Colors.grey} */}
-{/*           /> */}
-          <Text style={styles.reactionCount}>Share</Text>
+         <TouchableOpacity>
+         <Text style={styles.reactionCount}>Share</Text>
+         </TouchableOpacity>
         </View>
       </View>
+      <View style={{display:'none'}}>
+
+      </View>
+    <ShowComment />
     </View>
   );
 };

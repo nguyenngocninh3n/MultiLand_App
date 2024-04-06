@@ -1,20 +1,50 @@
 import {View, Image, StyleSheet, Text} from 'react-native';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import UserProfile from '../assets/images/post1.jpeg';
 import {Colors} from '../utils/Colors';
 import VectorIcon from '../utils/VectorIcon';
 
+import firestore from "@react-native-firebase/firestore"
+
 const PostHeader = ({data}) => {
+
+  const [user,setUser] = useState({});
+
+  useEffect(()=> {
+    firestore()
+  .collection('users')
+  .doc(data.ownerID)
+  .get()
+  .then(documentSnapshot => {
+    // console.log('User exists: ', documentSnapshot.exists);
+    
+    if (documentSnapshot.exists) {
+      // console.log('PostHeader - User exist: ');
+      setUser(documentSnapshot.data())
+    }
+  });
+  },[])
+
+
+const formatDate = (timestamp) => {
+  const options = {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  };
+  return new Date(timestamp).toLocaleDateString(undefined, options);
+};
+
   return (
     <View style={styles.postHeaderContainer}>
       <View style={styles.postTopSec}>
         <View style={styles.row}>
-          <Image source={data.profileImg} style={styles.userProfile} />
+          <Image source={{uri:user.avatar}} style={styles.userProfile} />
           <View style={styles.userSection}>
-            <Text style={styles.username}>{data.name}</Text>
+            <Text style={styles.username}>{user.name}</Text>
             <View style={styles.row}>
-              <Text style={styles.days}>{data.date}</Text>
-              <Text style={styles.dot}>•</Text>
+              <Text style={styles.days}>{formatDate(data.timestamp)}</Text>
+             
               <VectorIcon
                 name="user-friends"
                 type="FontAwesome5"
@@ -25,23 +55,8 @@ const PostHeader = ({data}) => {
             </View>
           </View>
         </View>
-{/*         <View style={styles.row}> */}
-{/*           <VectorIcon */}
-{/*             name="dots-three-horizontal" */}
-{/*             type="Entypo" */}
-{/*             size={25} */}
-{/*             color={Colors.headerIconGrey} */}
-{/*             style={styles.headerIcons} */}
-{/*           /> */}
-{/*           <VectorIcon */}
-{/*             name="close" */}
-{/*             type="Ionicons" */}
-{/*             size={25} */}
-{/*             color={Colors.headerIconGrey} */}
-{/*           /> */}
-{/*         </View> */}
       </View>
-      <Text style={styles.caption}>{data.caption}</Text>
+      <Text style={styles.caption}>{data.content}</Text>
     </View>
   );
 };

@@ -6,72 +6,66 @@ import {
   TouchableOpacity,
   StyleSheet,
   ScrollView,
+  FlatList,
   SafeAreaView,
 } from 'react-native';
 
+import { Colors } from '../utils/Colors';
 import auth from '@react-native-firebase/auth';
+
+import PostHeader from '../components/PostHeader';
+import PostFooter from '../components/PostFooter';
 
 import firestore from '@react-native-firebase/firestore'
 
 const OwnerProfile = ({navigation}) => {
-  const {user} = auth().currentUser;
+  
+  const [PostData,setPostData] = useState([])
 
-  const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [deleted, setDeleted] = useState(false);
-  const [userData, setUserData] = useState(null);
+  const [user,setUser] = useState({});
 
-  const fetchPosts = async () => {
-    try {
-      const list = [];
-
-      await firestore()
-        .collection('posts')
-        .where('userId', '==', user.uid)
-        .orderBy('postTime', 'desc')
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            const {  userId,   post,  postImg,  postTime,  likes,  comments,   } = doc.data();
-            list.push({  id: doc.id,  userId,  userName: 'Test Name',
-              userImg:   'https://lh5.googleusercontent.com/-b0PKyNuQv5s/AAAAAAAAAAI/AAAAAAAAAAA/AMZuuclxAM4M1SCBGAO7Rp-QP6zgBEUkOQ/s96-c/photo.jpg',
-              post,   postImg,  postTime: postTime,  likes,   comments,    liked: false,
-            });
-          });
-        });
-
-      setPosts(list);
-
-      if (loading) {
-        setLoading(false);
-      }
-
-      console.log('Posts: ', posts);
-    } catch (e) {
-      console.log(e);
+  useEffect(()=> {
+    firestore()
+  .collection('users')
+  .doc(auth().currentUser.uid)
+  .get()
+  .then(documentSnapshot => {
+    
+    if (documentSnapshot.exists) {
+      // console.log('User data: ', documentSnapshot.data());
+      setUser(documentSnapshot.data())
     }
-  };
-
-  // const getUser = async() => {
-  //   await firestore()
-  //   .collection('users')
-  //   .doc( route.params ? route.params.userId : user.uid)
-  //   .get()
-  //   .then((documentSnapshot) => {
-  //     if( documentSnapshot.exists ) {
-  //       console.log('User Data', documentSnapshot.data());
-  //       setUserData(documentSnapshot.data());
-  //     }
-  //   })
-  // }
+  });
+  },[])
 
   useEffect(() => {
-    // getUser();
-    fetchPosts();
-    navigation.addListener("focus", () => setLoading(!loading));
-  }, [navigation, loading]);
+    const subscriber = firestore().collection("posts").where("ownerID","==",auth().currentUser.uid).onSnapshot((res) => {
+      const posts = []
 
-  const handleDelete = () => {};
+      if(res != null) {
+        res.forEach(documentSnapshot => {
+          posts.push({
+            ...documentSnapshot.data(),
+            key: documentSnapshot.id,
+          });
+        });
+      }
+
+      setPostData(posts);
+    })
+
+    return () => subscriber()
+  },[])
+
+
+  
+const onLogout = () => {
+  auth()
+    .signOut()
+    .then(() => Alert.alert('User signed out!'))
+    .catch(error => console.log('error :', error));
+};
+
 
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
@@ -81,13 +75,11 @@ const OwnerProfile = ({navigation}) => {
         showsVerticalScrollIndicator={false}>
         <Image
           style={styles.userImg}
-          source={{uri: userData ? userData.userImg || 'https://lh5.googleusercontent.com/-b0PKyNuQv5s/AAAAAAAAAAI/AAAAAAAAAAA/AMZuuclxAM4M1SCBGAO7Rp-QP6zgBEUkOQ/s96-c/photo.jpg' : 'https://lh5.googleusercontent.com/-b0PKyNuQv5s/AAAAAAAAAAI/AAAAAAAAAAA/AMZuuclxAM4M1SCBGAO7Rp-QP6zgBEUkOQ/s96-c/photo.jpg'}}
+          source={{uri:user.avatar}} 
         />
-        <Text style={styles.userName}>{userData ? userData.fname || 'Test' : 'Test'} {userData ? userData.lname || 'User' : 'User'}</Text>
+        <Text style={styles.userName}>{user.name}</Text>
        
-        <Text style={styles.aboutUser}>
-        {userData ? userData.about || 'No details added.' : ''}
-        </Text>
+       
         <View style={styles.userBtnWrapper}>
     
               <TouchableOpacity
@@ -97,31 +89,42 @@ const OwnerProfile = ({navigation}) => {
                 }}>
                 <Text style={styles.userBtnTxt}>Edit</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.userBtn} onPress={() => logout()}>
+              <TouchableOpacity style={styles.userBtn} onPress={onLogout}>
                 <Text style={styles.userBtnTxt}>Logout</Text>
               </TouchableOpacity>
           
-          )}
+        
         </View>
-
         <View style={styles.userInfoWrapper}>
           <View style={styles.userInfoItem}>
-            <Text style={styles.userInfoTitle}>{posts.length}</Text>
+            <Text style={styles.userInfoTitle}>{PostData.length}</Text>
             <Text style={styles.userInfoSubTitle}>Posts</Text>
           </View>
           <View style={styles.userInfoItem}>
-            <Text style={styles.userInfoTitle}>10,000</Text>
+            <Text style={styles.userInfoTitle}>0</Text>
             <Text style={styles.userInfoSubTitle}>Followers</Text>
           </View>
           <View style={styles.userInfoItem}>
-            <Text style={styles.userInfoTitle}>100</Text>
+            <Text style={styles.userInfoTitle}>0</Text>
             <Text style={styles.userInfoSubTitle}>Following</Text>
           </View>
         </View>
 
-        {posts.map((item) => (
-          <PostCard key={item.id} item={item} onDelete={handleDelete} />
-        ))}
+        <View style={styles.postContainer}>
+          <FlatList data={PostData}
+              horizontal={false}
+              renderItem={({item}) => (
+                              
+                  <View style={{width:"100%",flex:1}} key={item.ownerID}>
+                    <PostHeader data={item} />
+                    <Image source={{uri:item.image}} style={styles.postImg} />
+                    <PostFooter data={item} />
+                </View>
+                
+              )}
+        />
+    
+      </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -133,9 +136,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    padding: 20,
+    padding: 10,
   },
   userImg: {
+    marginTop:400,
     height: 150,
     width: 150,
     borderRadius: 75,
@@ -163,8 +167,8 @@ const styles = StyleSheet.create({
     borderColor: '#2e64e5',
     borderWidth: 2,
     borderRadius: 3,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
+    paddingVertical: 3,
+    paddingHorizontal: 6,
     marginHorizontal: 5,
   },
   userBtnTxt: {
@@ -174,7 +178,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     width: '100%',
-    marginVertical: 20,
+    marginVertical: 10,
   },
   userInfoItem: {
     justifyContent: 'center',
@@ -190,4 +194,18 @@ const styles = StyleSheet.create({
     color: '#666',
     textAlign: 'center',
   },
+
+
+    postContainer: {
+      backgroundColor: Colors.white,
+      
+  
+    },
+    postImg: {
+      width: '100%',
+      height: 200,
+      paddingLeft:200,
+      paddingRight:200,
+    },
+
 });

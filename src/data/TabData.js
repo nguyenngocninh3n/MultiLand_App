@@ -6,6 +6,8 @@ import ProfileScreen from '../screens/ProfileScreen';
 import WatchScreen from '../screens/WatchScreen';
 import Profile from '../screens/OwnerProfile'
 import NewPost from '../screens/post/NewPost';
+
+import OwnerProfile from '../screens/OwnerProfile';
 export const TabData = [
   {
     id: 1,
@@ -30,12 +32,11 @@ export const TabData = [
  {
    id: 3,
    route: NewPost,
-   name: 'Watch',
-   activeIconName: 'youtube-tv',
-   activeiconType: 'MaterialCommunityIcons',
-   inactiveIconName: 'television-play',
-   inactiveIconType: 'MaterialCommunityIcons',
-   size: 25,
+   name: 'newpost',
+   iconName: 'pluscircleo',
+   iconType: 'AntDesign',
+
+   size: 35,
    unFocusSize: 25,
  },
 //  {
@@ -61,7 +62,7 @@ export const TabData = [
   },
   {
     id: 6,
-    route: ProfileScreen,
+    route: OwnerProfile,
     name: 'Profile',
     iconName: 'user',
     iconType: 'AntDesign',

@@ -22,21 +22,23 @@ import { Icon } from 'react-native-paper';
 
 const Tab = createMaterialBottomTabNavigator();
 
-const BottomTabbar = () => {
+const BottomTabbar = ({navigation}) => {
   return (
     <>
       <Tab.Navigator style={{height:150}}
+      backBehavior='history'
         screenOptions={() => ({
           tabBarShowLabel: false,
-          
           tabBarActiveTintColor: Colors.primaryColor,
           tabBarInactiveTintColor: Colors.grey,
         })} barStyle={{height:60, marginBottom:0 }}>
 
         {TabData.map(tab => (
           <Tab.Screen 
+          
                             key={tab.id}
                             name={tab.name}
+                            navigation={navigation}
                             component={tab.route}
                             style = {{backgroundColor:tab.backgroundColor}}
                             options={{
@@ -50,13 +52,8 @@ const BottomTabbar = () => {
                                   style={focused?{height:100, width:50, paddingLeft: 10, margintop:10 }:{height:100, width:50, paddingLeft: 10, margintop:-15 }}
                                 />
                               ),
-                              tabBarLabel:false,
-                              
+                              tabBarLabel:false,                            
             }}
-
-
-
-
           />
         ))}
       </Tab.Navigator>

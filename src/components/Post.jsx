@@ -1,20 +1,49 @@
-import {View, StyleSheet, Image} from 'react-native';
-import React from 'react';
+import {View, StyleSheet, Image, Alert} from 'react-native';
+import React, { useEffect, useState } from 'react';
 import {Colors} from '../utils/Colors';
 import PostHeader from './PostHeader';
 import PostFooter from './PostFooter';
-import {PostData} from '../data/PostData';
+
+import firestore from '@react-native-firebase/firestore'
+import { FlatList, ScrollView } from 'react-native-gesture-handler';
+
+
+
 
 const Post = () => {
+  const [PostData,setPostData] = useState([])
+  
+
+  useEffect(() => {
+    const subscriber = firestore().collection("posts").orderBy('timestamp','desc').onSnapshot((res) => {
+      const posts = []
+      if(res != null) {
+        res.forEach(documentSnapshot => {
+          posts.push({
+            ...documentSnapshot.data(),
+            key: documentSnapshot.id,
+          });
+        });
+      }
+      setPostData(posts);
+    })
+
+    return () => subscriber()
+  },[])
+
+
   return (
     <View style={styles.postContainer}>
-      {PostData.map(item => (
-        <View key={item.id}>
-          <PostHeader data={item} />
-          <Image source={item.postImg} style={styles.postImg} />
-          <PostFooter data={item} />
-        </View>
-      ))}
+    <FlatList data={PostData}
+              horizontal={false}
+              renderItem={({item}) => (                        
+                  <View key={item.ownerID}>
+                    <PostHeader data={item} />
+                    <Image source={{uri:item.image}} style={styles.postImg} />
+                    <PostFooter data={item} />
+                </View>              
+              )}
+        />  
     </View>
   );
 };
@@ -25,7 +54,9 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   postImg: {
-    width: '100%',
+    width: '90%',
+  
+    margin:20,
     height: 250,
   },
 });

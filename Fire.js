@@ -26,56 +26,41 @@ class Fire {
 
     addPost  = async ({content, localUri}) => {
         console.log("start addPost")
-        
-        const remoteUri = await this.uploadPhoto(localUri);
-
-        console.log("after uploadphoto, remote Uri: ",url_remote)
+        var timePost = +Date.now().toString();
+        var postID = this.uid+timePost;
+        const remoteUri = null;
+        if(localUri != null) {
+        remoteUri = await this.uploadPhoto(localUri);
+        }        
        
-        console.log(
-            "content: ", content,
-                "image: ", url_remote,
-                "userID: ", this.uid,
-                "ownerID: ",this.uid,
-                "timestamp: ",this.timestamp,
-           
-        )
         return new Promise((res, rej) => {
         console.log("start promise:")
             firebase.firestore()
             .collection("posts")
-            .add({
+            .doc(postID)
+            .set({
                 content:content,
                 image: url_remote,
                 userID:this.uid,
                 ownerID: this.uid,
-                timestamp:this.timestamp,
+                timestamp:timePost,
+                postID: postID,
                 like:0,
-                share:0,
-                
+                comment:0,
             })
-            .then(ref => {
-                res(ref);
-                console.log("fire: ref")
-
-            })
-            .catch(error => {rej(error)
-             console.log("fire: error")
-
-            })
+            .then(ref => {  res(ref);  })
+            .catch(error => {rej(error)  })
+            console.log('end promise')
         });
     };
 
     uploadPhoto = async uri => {
-        const path = `photos/${this.uid}/${Date.now()}.jpg`
+        const path = `photos/${this.uid}/${Date.now().toString()}.jpg`
         
         return new Promise(async(res, rej) => {
-       
             const response = await fetch(uri);
             const file = await response.blob();
-
-        
             let upload = storage().ref(path).put(file);
-            
             upload.on("state_changed", 
                     snapshot => {},
                     err=> {rej(err)},
@@ -84,11 +69,7 @@ class Fire {
                         url_remote = url;
                         console.log("path url: ",url)
                         res(url)
-                    }
-                    )
-           
-       
-             
+                    }  )
         })
     }
 }

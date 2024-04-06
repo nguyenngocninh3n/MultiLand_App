@@ -1,39 +1,58 @@
-import {View, Image, StyleSheet} from 'react-native';
-import React from 'react';
-import textLogo from '../assets/images/text-logo.png';
-import VectorIcon from '../utils/VectorIcon';
+import {View, Image, StyleSheet, TouchableOpacity} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import Logo from '../assets/images/logo.png';
+
 import {Colors} from '../utils/Colors';
-import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import AntDesign  from 'react-native-vector-icons/dist/AntDesign';
+import { TextInput } from 'react-native-gesture-handler';
+import { Text } from 'react-native-paper';
 
-
-
-import FontAwesome from 'react-native-vector-icons/dist/FontAwesome';
-import FontAwesome5 from 'react-native-vector-icons/dist/FontAwesome5';
-import MaterialCommunityIcons from 'react-native-vector-icons/dist/MaterialCommunityIcons';
-import MaterialIcons from 'react-native-vector-icons/dist/MaterialIcons';
-import Feather from 'react-native-vector-icons/dist/Feather';
-
-
-import Entypo from 'react-native-vector-icons/dist/Entypo';
-import Ionicons from 'react-native-vector-icons/dist/Ionicons';
-import Octicons from 'react-native-vector-icons/dist/Octicons';
-import Fontisto from 'react-native-vector-icons/dist/Fontisto';
-import { Icon } from 'react-native-paper';
 
 
 const Header = () => {
+
+  const [inputSearch_state, setInputSearch_state] = useState(styles.hideInputSearch)
+  const [search_state, setSearch_state] = useState(styles.showInputSearch)
+  const [search_onclick,setSearch_onlick] = useState(false);
+  useEffect(()=>{
+    if(search_onclick==false) {
+      setInputSearch_state(styles.hideInputSearch)
+      setSearch_state(styles.showInputSearch)
+    }
+    else {
+      setInputSearch_state(styles.showInputSearch)
+      setSearch_state(styles.hideInputSearch)
+    }
+  },[search_onclick])
+
+
   return (
     <View style={styles.container}>
-      <Image source={textLogo} style={styles.fbLogoStyle} />
+      <Image source={Logo} style={styles.fbLogoStyle} />
       <View style={styles.headerIcons}>
+        <View style={inputSearch_state}>
+        <View style={styles.search_container}>
+            <TextInput multiline={true} 
+                      placeholder='Nhập nội dung vào đây' />
+            <TouchableOpacity onPress={()=>{
+              setSearch_onlick(!search_onclick)
+          }}>
+              <Text>Tìm kiếm</Text>
+            </TouchableOpacity>
+        </View>
+        </View>
+        <View  style={styles.showInputSearch}>
         <View style={styles.searchBg}>
-          <AntDesign
-            name="search1"
-            type="AntDesign"
-            size={24}
-            color={Colors.grey}
-          />
+          <TouchableOpacity onPress={()=>{
+              setSearch_onlick(!search_onclick)
+          }}>
+            <AntDesign
+              name="search1"
+              type="AntDesign"
+              size={24}
+              color={Colors.grey}
+            />
+          </TouchableOpacity>
         </View>
        
         <View style={styles.searchBg}>
@@ -44,6 +63,7 @@ const Header = () => {
             color={Colors.grey}
           />
         </View>
+        </View>
       </View>
     </View>
   );
@@ -52,8 +72,26 @@ const Header = () => {
 const styles = StyleSheet.create({
   fbLogoStyle: {
     height: 25,
-    width: 130,
+    width: 25,
   },
+
+  hideInputSearch: {
+    display:'none'
+  },
+
+  showInputSearch: {
+    display:'flex',
+    flexDirection:'row',
+    alignItems:'center'
+    
+  },
+  search_container: {
+      flexDirection:'row',
+      alignItems:'center',
+      height:40,
+      width: 200,
+  },
+
   searchBg: {
     backgroundColor: Colors.lightgrey,
     height: 35,

@@ -1,17 +1,43 @@
 import {View, Text, Image, StyleSheet} from 'react-native';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+
 import Profile from '../assets/images/img1.jpeg';
 import VectorIcon from '../utils/VectorIcon';
 import {Colors} from '../utils/Colors';
 
+import AntDesign  from 'react-native-vector-icons/dist/AntDesign';
+
+import auth from '@react-native-firebase/auth'
+import firestore from '@react-native-firebase/firestore'
+
 const CreateStory = () => {
+
+  const [user,setUser] = useState({});
+
+  useEffect(()=> {
+    firestore()
+  .collection('users')
+  .doc(auth().currentUser.uid)
+  .get()
+  .then(documentSnapshot => {
+    // console.log('User exists: ', documentSnapshot.exists);
+    
+
+    if (documentSnapshot.exists) {
+      // console.log('User data: ', documentSnapshot.data());
+      setUser(documentSnapshot.data())
+    }
+  });
+  },[])
+
+
   return (
     <View style={styles.createStoryContainer}>
-      <Image source={Profile} style={styles.profileImg} />
+      <Image source={{uri:user.avatar}} style={styles.profileImg} />
       <View style={styles.iconContainer}>
-        <VectorIcon
-          name="circle-with-plus"
-          type="Entypo"
+        <AntDesign
+          name="pluscircleo"
+          type= "Ionicons"
           size={35}
           color={Colors.primaryColor}
         />

@@ -30,7 +30,7 @@ const NotificationScrren = () => {
 
 const styles = StyleSheet.create({
     notifyContainer: {
-     backgroundColor: Colors.grey,
+     backgroundColor: Colors.white,
     },
 
 
