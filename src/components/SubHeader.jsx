@@ -6,31 +6,37 @@ import {Colors} from '../utils/Colors';
 
 import auth from '@react-native-firebase/auth'
 import firestore from '@react-native-firebase/firestore'
-const SubHeader = ({navigation}) => {
+const SubHeader = ({navigation, user}) => {
 
-  const [user,setUser] = useState({});
+  // const user = userData;
+  // const [user,setUser] = useState({});
 
-  useEffect(()=> {
-    firestore()
-  .collection('users')
-  .doc(auth().currentUser.uid)
-  .get()
-  .then(documentSnapshot => {
-    console.log('User exists: ', documentSnapshot.exists);
-    if (documentSnapshot.exists) {
-      console.log('User data: ', documentSnapshot.data());
-      setUser(documentSnapshot.data())
-    }
-  });
-  },[])
+  // useEffect(()=> {
+  //   firestore()
+  // .collection('users')
+  // .doc(auth().currentUser.uid)
+  // .get()
+  // .then(documentSnapshot => {
+  //   console.log('User exists: ', documentSnapshot.exists);
+  //   if (documentSnapshot.exists) {
+  //     console.log('User data: ', documentSnapshot.data());
+  //     setUser(documentSnapshot.data())
+  //   }
+  // });
+  // },[])
 
   const createNewPost = () =>{
     navigation.navigate('newpost')
   }
 
+  const GetImage =({source}) => {
+    if(source=="" || source == null) {  return; }
+    else {  return ( <Image source={{uri:source}} style={styles.profileStyle} />  )  }
+  }
+
   return (
     <View style={styles.container}>
-      <Image source={{uri: user.avatar}} style={styles.profileStyle} />
+      <GetImage source={user.avatar} />
       <View style={styles.inputBox} >
         <TouchableOpacity onPress={createNewPost}>
         <Text style={styles.inputStyle}>Thêm nội dung mới...</Text>

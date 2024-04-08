@@ -8,6 +8,7 @@ import Profile from '../screens/OwnerProfile'
 import NewPost from '../screens/post/NewPost';
 
 import OwnerProfile from '../screens/OwnerProfile';
+import UserProfile from '../screens/UserProfile';
 export const TabData = [
   {
     id: 1,

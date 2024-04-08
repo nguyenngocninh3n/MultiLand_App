@@ -1,4 +1,4 @@
-import { StyleSheet, Alert, TextInput, Image, TouchableOpacity, PermissionsAndroid, View, SafeAreaView, Text  } from "react-native"
+import { StyleSheet, Alert, TextInput, Image, TouchableOpacity, PermissionsAndroid, View, SafeAreaView, Text, ScrollView  } from "react-native"
 import React, { useState, useEffect }  from "react"
 import Fire from "../../../Fire";
 
@@ -15,7 +15,7 @@ export default NewPost =({navigation, route}) => {
    const [image, setImage] = useState(null);
    const [image_state, setImage_state] = useState(false)
    const [user,setUser] = useState({});
-
+   const [imgSize,setImgSize] = useState({})
   useEffect(()=> {
     firestore()
   .collection('users')
@@ -44,13 +44,11 @@ export default NewPost =({navigation, route}) => {
             },
           );
           if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-            // console.log('You can use the camera');
-            // const result = await launchCamera({mediaType:'photo',cameraType:'front'})
             const result = await launchImageLibrary({mediaType:'photo'})
             setImage_state(true)
             setImage(result.assets[0].uri);
+            console.log('gia tri cua img la: ',image)
           } else {
-            // console.log('Camera permission denied');
             Alert.alert('Chưa cấp quyền')
           }
         } catch (err) {
@@ -75,28 +73,36 @@ export default NewPost =({navigation, route}) => {
 
       }
 
+      const GetImage =({source}) => {
+        if(source=="" || source == null) {   return;  }
+        else {   return (   <Image source={{uri:source}} style={styles.avatar} />  )  }
+      }
+
+      const GetImageUpload =({source}) => {
+        if(source=="" || source == null) {   return;  }
+        else {   return (   <Image style={{marginRight:20,
+        marginBottom:10, width:'100%', height:'100%', resizeMode:'contain'}} source={{uri:source}} />  )  }
+      }
+
+
     return(
         <SafeAreaView style={styles.container}>
             <View style={styles.header}>
                 <TouchableOpacity >
-                    <Ionicon name="md-arrow-back"
-                            size={24}
-                            color="#D8D9DB" />
+                    <Ionicon name="md-arrow-back"   size={24} color="#D8D9DB" />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={ 
-                 handlePost
-                }>
+                <TouchableOpacity onPress={   handlePost     }>
                     <Text style={{fontSize:24, marginRight:20}}>Post</Text>
                 </TouchableOpacity>
             </View>
             <View style={styles.inputContainer}>
-                {/* <Image source={{uri:user.avatar}} style={styles.avatar} /> */}
+                <GetImage source={user.avatar} />
                 <TextInput
+                    style={styles.textInput}
                     onChangeText={ value => {setContent(value)}}
                     autoFocus={true}
                     multiline={true}
                     numberOfLines={6}
-                    style={{flex:1}}
                     placeholder="Ngày hôm nay của bạn thế nào?" 
                     value={content}    
                     />
@@ -105,8 +111,10 @@ export default NewPost =({navigation, route}) => {
             <TouchableOpacity onPress={openImage} style={styles.photo}>
                 <AntDesign name="picture" size={35}      />
             </TouchableOpacity>
-            <View>
-                  <Image source={image?{uri:image}:{}} style={{width:'100%', height: '100%'}} />
+            <View style={{height:'60%'}}>
+            
+               <GetImageUpload source={image}/>
+              
             </View>
         </SafeAreaView>
     )
@@ -126,14 +134,27 @@ const styles = StyleSheet.create({
         borderBottomColor: '#d8D9DB'
     },
     inputContainer: {
-        margin:32,
+        margin:20,
         flexDirection:'row',
+
+       
     },
     avatar: {
         width:48,
         height:48,
         borderRadius: 24,
-        marginRight:16,
+        marginRight:16,  
+      
+    },
+    imgPost: {
+      width:'100%',
+      height:'100%',
+    },
+    textInput: {
+      width:'80%',
+      fontSize:16,
+      marginLeft:16,  
+
     },
     photo: {
         alignItems:'flex-end',

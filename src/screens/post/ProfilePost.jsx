@@ -6,14 +6,13 @@ import PostFooter from './PostFooter';
 
 import firestore from '@react-native-firebase/firestore'
 import { FlatList, ScrollView } from 'react-native-gesture-handler';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 
-const Post = ({navigation, user}) => {
+const ProfilePost = ({navigation}) => {
   const [PostData,setPostData] = useState([])
   
   useEffect(() => {
-    firestore().collection("posts").orderBy('timestamp','desc').onSnapshot((res) => {
+    const subscriber = firestore().collection("posts").orderBy('timestamp','desc').onSnapshot((res) => {
       const posts = []
       if(res != null) {
         res.forEach(documentSnapshot => {
@@ -26,30 +25,23 @@ const Post = ({navigation, user}) => {
       setPostData(posts);
     })
 
+    return () => subscriber()
   },[])
 
 
-  const GetImage =({source}) => {
-    if(source=="" || source == null) {   return;  }
-    else {   return (   <Image source={{uri:source}} style={styles.postImg} />  )  }
-  }
-
   return (
-    <SafeAreaView style={styles.postContainer}>
-    <FlatList 
-              scrollEnabled={false}
-              data={PostData}
+    <View style={styles.postContainer}>
+    <FlatList data={PostData}
               horizontal={false}
               renderItem={({item}) => (                        
                   <View key={item.ownerID}>
-                    <PostHeader data={item} user={user} navigation={navigation} />
-                    <GetImage source={item.image}/>
+                    <PostHeader data={item} navigation={navigation} />
+                    <Image source={{uri:item.image}} style={styles.postImg} />
                     <PostFooter data={item} />
-                    
                 </View>              
               )}
         />  
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -60,14 +52,10 @@ const styles = StyleSheet.create({
   },
   postImg: {
     width: '90%',
+  
     margin:20,
     height: 250,
   },
-  postImg_none: {
-    width:0,
-    height:0,
-    margin:0,
-  },
 });
 
-export default Post;
+export default ProfilePost;

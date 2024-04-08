@@ -21,9 +21,14 @@ const CreateStory = () => {
   });
   },[])
 
+  const GetImage =({source}) => {
+    if(source=="" || source == null) {  return; }
+    else {  return ( <Image source={{uri:source}} style={styles.profileImg} />  )  }
+  }
+
   return (
     <View style={styles.createStoryContainer}>
-      <Image source={{uri:user.avatar}} style={styles.profileImg} />
+      <GetImage source={user.avatar} />
       <View style={styles.iconContainer}>
         <AntDesign
           name="pluscircleo"

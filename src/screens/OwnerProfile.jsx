@@ -15,7 +15,6 @@ import auth from '@react-native-firebase/auth';
 
 import PostHeader from '../components/PostHeader';
 import PostFooter from '../components/PostFooter';
-
 import firestore from '@react-native-firebase/firestore'
 
 const OwnerProfile = ({navigation}) => {
@@ -67,16 +66,20 @@ const onLogout = () => {
 };
 
 
+const GetImage =({source, style}) => {
+  if(source=="" || source == null) {   return;  }
+  else {   return (   <Image source={{uri:source}} style={style} />  )  }
+}
+
+
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
       <ScrollView
         style={styles.container}
         contentContainerStyle={{justifyContent: 'center', alignItems: 'center'}}
         showsVerticalScrollIndicator={false}>
-        <Image
-          style={styles.userImg}
-          source={{uri:user.avatar}} 
-        />
+        <GetImage source={user.avatar} style={styles.userImg} />
+        
         <Text style={styles.userName}>{user.name}</Text>
        
        
@@ -111,13 +114,15 @@ const onLogout = () => {
         </View>
 
         <View style={styles.postContainer}>
-          <FlatList data={PostData}
+          <FlatList
+             scrollEnabled={false}
+             data={PostData}
               horizontal={false}
               renderItem={({item}) => (
                               
                   <View style={{width:"100%",flex:1}} key={item.ownerID}>
-                    <PostHeader data={item} />
-                    <Image source={{uri:item.image}} style={styles.postImg} />
+                    <PostHeader data={item} user={user} />
+                    <GetImage source={item.image} style={styles.postImg} />
                     <PostFooter data={item} />
                 </View>
                 

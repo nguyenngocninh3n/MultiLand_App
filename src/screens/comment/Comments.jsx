@@ -5,6 +5,7 @@ import { FlatList, TextInput } from 'react-native-gesture-handler'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import auth from '@react-native-firebase/auth'
 
+import Modal from 'react-native-modal'
 
 export default Comments = ({dataPost}) => {
     const [comments, setComments] = useState([])
@@ -46,7 +47,25 @@ export default Comments = ({dataPost}) => {
         
     },[])
 
-    const PostComment = () => {
+    useEffect(()=>{
+      if(sendComment_state == true) {
+        const unsubscriber = firestore().collection('posts').doc(dataPost.postID)
+        .update({comment:dataPost.comment+1})
+        .then(()=>{console.log('update so luong comment thanh cong')})
+        .catch(error =>{console.log('loi khi update so luong comment in post: ',error)})
+
+        return () => unsubscriber;
+      }
+    },[sendComment_state])
+
+    const updateCommentInPost =() => {
+      firestore().collection('posts').doc(dataPost.postID)
+                  .update({comment:dataPost.comment+1})
+                  .onSnapshot(documentSnapshot => {console.log(documentSnapshot)})
+                  .catch(error =>{console.log('loi khi update so luong comment in post: ',error)})
+  }
+
+    const PostComment = async  () =>  {
         let timePost = Date.now();
         let commentID = userID + dataPost.postID + timePost;
         firestore().collection('comments').doc(commentID)
@@ -62,21 +81,42 @@ export default Comments = ({dataPost}) => {
                     })
                     .then(ref=>{console.log('ref: ',ref),
                     setCommentContent(""),
+                    // updateCommentInPost();123
                     setSendComment_state(!sendComment_state)
+                    setSendComment_state(!sendComment_state)
+
                 })
                     .catch(error => {console.log(error)})
+        
+        
     }
+
+    const GetImage =({source}) => {
+      if(source=="") {  return; }
+      else {  return ( <Image source={{uri:source}}  style={styles.avatar} />  )  }
+    }
+  
+   const [textInput_style, setTextInput_style] = useState(styles.textInput_styleOut)
+   const textInputInt = () =>{
+    setTextInput_style(styles.textInput_styleIn)
+   }
+
+   const textInputOut = () => {
+    setTextInput_style(styles.textInput_styleOut)
+   }
+   useEffect(()=>{textInputOut},[])
+
 
     return (
         <View>
-            <View style={{height:'85%'}}>
-                <FlatList  style={{ backgroundColor:'#fff'}}
+            <View height="85%">
+                <FlatList   style={{ backgroundColor:'#fff'}}
                 data={comments}
                 horizontal={false}
                 renderItem={({item}) => (
                     <View style={styles.container}>
                         <View style={styles.row}>
-                            <Image source={{uri:item.avatar}} style={styles.avatar} />
+                            <GetImage source={item.avatar} />
                             <View style={styles.column}> 
                                 <Text style={styles.userNameText}>{item.userName}</Text>
                                 <Text style={styles.commentText}>{item.comment}</Text>
@@ -87,8 +127,10 @@ export default Comments = ({dataPost}) => {
                 )}
                 />
             </View>
-            <View style={{  flexDirection:'column'}}>
-                <TextInput value={commentContent} style={{ borderWidth:1, borderTopColor:'#dda',marginTop:10, marginRight:5, marginLeft:5}} onChangeText={value => setCommentContent(value)} placeholder='viết bình luận....' multiline={true}  numberOfLines={2}  />
+            <View backgroundColor='#eee' >
+                <TextInput  style={textInput_style}
+                onPressOut={textInputOut}
+                 onPressIn={textInputInt}  value={commentContent}  onChangeText={value => setCommentContent(value)} placeholder='viết bình luận....' multiline={true}  numberOfLines={2}  />
                 <TouchableOpacity style={{ alignItems:'center', paddingLeft:20, paddingRight:20, paddingTop:10, paddingBottom:10 ,backgroundColor:'#00f' }} onPress={PostComment}>
                     <Text style={{color:'#fff', fontWeight:'bold', fontSize:14}}>Gửi</Text>
                 </TouchableOpacity>
@@ -127,5 +169,20 @@ const styles = StyleSheet.create({
   commentText: {
     fontSize:16,
     fontWeight:'300',
+  },
+  textInput_styleIn: {
+    borderWidth:1,
+    borderTopColor:'#dda',
+    backgroundColor:'#eee',
+    marginTop:-40, 
+    paddingLeft:10,
+   
+  },
+
+  textInput_styleOut: {
+    borderWidth:1,
+    borderTopColor:'#dda',
+    
+    paddingLeft:10,
   }
 })

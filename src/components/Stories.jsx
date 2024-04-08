@@ -5,7 +5,7 @@ import FriendStories from './FriendStories';
 
 
 
-const Stories = () => {
+const Stories = ({user}) => {
 
  
 
@@ -15,7 +15,7 @@ const Stories = () => {
       style={styles.storiesContainer}
       showsHorizontalScrollIndicator={false}
       contentContainerStyle={styles.contentContainerStyle}>
-      <CreateStory />
+      <CreateStory imgUri={user.avatar} />
       <FriendStories />
     </ScrollView>
   );

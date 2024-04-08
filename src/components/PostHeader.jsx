@@ -1,28 +1,31 @@
-import {View, Image, StyleSheet, Text} from 'react-native';
+import {View, Image, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import UserProfile from '../assets/images/post1.jpeg';
 import {Colors} from '../utils/Colors';
 import VectorIcon from '../utils/VectorIcon';
-
+import Modal from 'react-native-modal'
 import firestore from "@react-native-firebase/firestore"
+import { SafeAreaView } from 'react-native-safe-area-context';
+import Fire from '../../Fire';
 
-const PostHeader = ({data}) => {
+const PostHeader = ({data,user,navigation}) => {
 
-  const [user,setUser] = useState({});
+  const [options_state, setOptions_state] = useState(false)
 
-  useEffect(()=> {
-    firestore()
-  .collection('users')
-  .doc(data.ownerID)
-  .get()
-  .then(documentSnapshot => {
-    console.log('User exists: ', documentSnapshot.exists);
-    if (documentSnapshot.exists) {
-      console.log('PostHeader - User exist: ');
-      setUser(documentSnapshot.data())
-    }
-  });
-  },[])
+  // const [user,setUser] = useState({});
+  // useEffect(()=> {
+  //   firestore()
+  // .collection('users')
+  // .doc(data.ownerID)
+  // .get()
+  // .then(documentSnapshot => {
+  //   console.log('User exists: ', documentSnapshot.exists);
+  //   if (documentSnapshot.exists) {
+  //     console.log('PostHeader - User exist: ');
+  //     setUser(documentSnapshot.data())
+  //   }
+  // });
+  // },[])
 
 
 const formatDate = (timestamp) => {
@@ -34,11 +37,44 @@ const formatDate = (timestamp) => {
   return new Date(timestamp).toLocaleDateString(undefined, options);
 };
 
+const onDeletePost = async () => {
+  await Fire.shared.deletePost({postID: data.postID});
+}
+
+const GetOptions = () => {
+  return (
+    <SafeAreaView style={{flexDirection:'column', justifyContent:'center'}}>
+      <Modal style={{height:'80%',width:'100%',marginTop:300, backgroundColor:'#eea'}}
+          onBackdropPress={()=>setOptions_state(false)}
+          onBackButtonPress={()=>setOptions_state(false)}
+          isVisible={options_state}
+          
+      >
+          <View style={{width:'100%',height:50,borderWidth:1,backgroundColor:'#eee'}}>
+            <TouchableOpacity onPress={()=>{navigation.navigate('EditPost', {dataPost: data})}}>
+              <Text>Sửa bài viết</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={{width:'100%',height:50,borderWidth:1,backgroundColor:'#eee'}}>
+            <TouchableOpacity onPress={onDeletePost}>
+              <Text>Xóa bài viết</Text>
+            </TouchableOpacity>
+          </View>
+      </Modal>
+    </SafeAreaView>
+  )
+}
+
+const GetImage =({source}) => {
+  if(source=="" || source == null) {  return; }
+  else {  return ( <Image source={{uri:source}}   style={styles.userProfile}  />  )  }
+}
+
   return (
     <View style={styles.postHeaderContainer}>
       <View style={styles.postTopSec}>
         <View style={styles.row}>
-          <Image source={{uri:user.avatar}} style={styles.userProfile} />
+          <GetImage source={user.avatar} />
           <View style={styles.userSection}>
             <Text style={styles.username}>{user.name}</Text>
             <View style={styles.row}>
@@ -47,8 +83,19 @@ const formatDate = (timestamp) => {
             </View>
           </View>
         </View>
+        <View>
+          <TouchableOpacity onPress={()=>{
+            setOptions_state(true);
+     
+          }}>
+          <Text style={{fontSize:24, fontWeight:'900'}}>...</Text>
+          </TouchableOpacity>
+        </View>
+       
       </View>
       <Text style={styles.caption}>{data.content}</Text>
+      <GetOptions />
+      
     </View>
   );
 };

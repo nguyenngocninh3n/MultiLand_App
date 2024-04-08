@@ -69,6 +69,20 @@ class Fire {
                     }  )
         })
     }
+
+    editPost =({postID,newContent}) => {
+        firestore().collection('posts').doc(postID)
+                    .update({content:newContent})
+                    .then(()=>{console.log('sua post thanh cong')})
+                    .catch(error =>{console.log('loi khi update post: ',error)})
+    }
+
+    deletePost = ({postID}) => {
+        firestore().collection('posts').doc(postID)
+                   .delete()
+                   .then(()=> {console.log('xoa post thanh cong')})
+                   .catch(error=>{console.log('loi khi xoa post: ', error)})
+    }
 }
 
 Fire.shared = new Fire();

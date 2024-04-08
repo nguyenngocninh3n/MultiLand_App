@@ -22,10 +22,10 @@ const PostFooter = ({data}) => {
   const [comment_state, setComment_state] = useState(false)
 
 
-  useEffect(()=>{GetDataReaction(); logAllItem('...............log flie lan dau............')},[])
+  useEffect(()=>{GetDataReaction(); },[])
 
   useEffect(()=>{
-    logAllItem('..........kiem tra cap nhat ...........')
+    
     if(reaction != undefined && init == true) {
       uploadReaction();
     
@@ -120,7 +120,7 @@ const PostFooter = ({data}) => {
 
   const ShowComment = () => {
     return (
-      <View  >
+      <View   >
         <Modal isVisible={comment_state} 
                animationIn={'slideInUp'}
               //  animationInTiming={300}
@@ -128,7 +128,7 @@ const PostFooter = ({data}) => {
                animationOutTiming={900}
                onBackButtonPress={()=>setComment_state(false)}
                onBackdropPress={()=>setComment_state(false)}
-               style={{  marginTop:100, borderRadius:20,backgroundColor:'#fff', width:'90%', }}
+               style={{  marginTop:100, marginBottom:50,  borderRadius:20,backgroundColor:'#fff', width:'90%', }}
         >
           <Comments dataPost = {data} />
         </Modal>
@@ -150,7 +150,7 @@ const PostFooter = ({data}) => {
           <Image source={Heart} style={styles.reactionIcon} />
           <Text style={styles.reactionCount}>{data.like} likes</Text>
         </View>
-        <Text style={styles.reactionCount}>{data.comments} comments</Text>
+        <Text style={styles.reactionCount}>{data.comment} comments</Text>
       </View>
       <View style={styles.userActionSec}>
         <View  style={styles.row}>
@@ -172,9 +172,7 @@ const PostFooter = ({data}) => {
          </TouchableOpacity>
         </View>
       </View>
-      <View style={{display:'none'}}>
-
-      </View>
+   
     <ShowComment />
     </View>
   );
