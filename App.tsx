@@ -7,7 +7,9 @@ import { NavigationContainer } from '@react-navigation/native';
 import RegisterScreen from './src/screens/RegisterScreen';
 import MainScreen from './src/screens/MainScreen';
 import auth from '@react-native-firebase/auth';
+
 import EditPost from './src/screens/post/EditPost';
+import UserProfile from './src/screens/UserProfile';
 
 const Stack = createStackNavigator();
 
@@ -22,7 +24,8 @@ const App = () => {
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
     return subscriber;
   }, []);
-  
+
+  useEffect(()=>{console.log('in ra thong tin user khi login: ',user)},[user])
 
   return (
     <NavigationContainer>
@@ -32,6 +35,7 @@ const App = () => {
          <>
              <Stack.Screen name="MainScreen"  component={MainScreen} />
              <Stack.Screen name="EditPost"  component={EditPost} />
+             <Stack.Screen name='UserProfile' component={UserProfile} />
          </>
           :
           <>

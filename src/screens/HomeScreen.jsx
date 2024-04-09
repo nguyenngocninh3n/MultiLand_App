@@ -28,7 +28,7 @@ const HomeScreen = ({navigation}) => {
       <View style={{flexDirection:'column'}}>
       <SubHeader navigation={navigation} user={user} />
       <Stories user={user} />
-    <Post navigation={navigation} user={user} />
+    <Post navigation={navigation} />
     </View>
     </ScrollView>
   );

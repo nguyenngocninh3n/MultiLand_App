@@ -1,31 +1,31 @@
 import React, {useState, useEffect, useContext} from 'react';
-import { View,Text, Image, TouchableOpacity, StyleSheet, ScrollView, FlatList, SafeAreaView,
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+  FlatList,
+  SafeAreaView,
 } from 'react-native';
+
 import { Colors } from '../utils/Colors';
 import auth from '@react-native-firebase/auth';
 
-import ImagePost from './post/ImgagePost';
-
+import PostHeader from '../components/PostHeader';
+import PostFooter from '../components/PostFooter';
 import firestore from '@react-native-firebase/firestore'
 
-const OwnerProfile = ({navigation}) => {
+const UserProfile = ({navigation, route}) => {
   
-  const [PostData,setPostData] = useState([])
-  const [user,setUser] = useState({});
+  const user = route.params.dataUser;
 
-  useEffect(()=> { 
-    firestore().collection('users').doc(auth().currentUser.uid).get()
-        .then(documentSnapshot => {
-    
-         if (documentSnapshot.exists) {
-          // console.log('User data: ', documentSnapshot.data());
-           setUser(documentSnapshot.data())
-         }
-        });
-  },[])
+  const [PostData,setPostData] = useState([])
+
 
   useEffect(() => {
-    const subscriber = firestore().collection("posts").where("ownerID","==",auth().currentUser.uid).onSnapshot((res) => {
+    const subscriber = firestore().collection("posts").where("ownerID","==",user.uid).onSnapshot((res) => {
       const posts = []
 
       if(res != null) {
@@ -53,33 +53,29 @@ const onLogout = () => {
 };
 
 
+const GetImage =({source, style}) => {
+  if(source=="" || source == null) {   return;  }
+  else {   return (   <Image source={{uri:source}} style={style} />  )  }
+}
+
+
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
       <ScrollView
         style={styles.container}
         contentContainerStyle={{justifyContent: 'center', alignItems: 'center'}}
         showsVerticalScrollIndicator={false}>
-        <Image
-          style={styles.userImg}
-          source={{uri:user.avatar}} 
-        />
+        <GetImage source={user.avatar} style={styles.userImg} />
+        
         <Text style={styles.userName}>{user.name}</Text>
        
        
         <View style={styles.userBtnWrapper}>
     
               <TouchableOpacity
-                style={styles.userBtn}
-                onPress={() => {
-                  navigation.navigate('EditProfile');
-                }}>
-                <Text style={styles.userBtnTxt}>Edit</Text>
+               >
+                <Text style={styles.userBtnTxt}>Follow</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.userBtn} onPress={onLogout}>
-                <Text style={styles.userBtnTxt}>Logout</Text>
-              </TouchableOpacity>
-          
-        
         </View>
         <View style={styles.userInfoWrapper}>
           <View style={styles.userInfoItem}>
@@ -96,15 +92,29 @@ const onLogout = () => {
           </View>
         </View>
 
-        <View>
-                <ImagePost  userID={user.uid} />
-        </View>
+        <View style={styles.postContainer}>
+          <FlatList
+             scrollEnabled={false}
+             data={PostData}
+              horizontal={false}
+              renderItem={({item}) => (
+                              
+                  <View style={{width:"100%",flex:1}} key={item.ownerID}>
+                    <PostHeader data={item} user={user} />
+                    <GetImage source={item.image} style={styles.postImg} />
+                    <PostFooter data={item} />
+                </View>
+                
+              )}
+        />
+    
+      </View>
       </ScrollView>
     </SafeAreaView>
   );
 };
 
-export default OwnerProfile;
+export default UserProfile;
 
 const styles = StyleSheet.create({
   container: {

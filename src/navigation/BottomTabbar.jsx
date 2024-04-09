@@ -35,6 +35,7 @@ const BottomTabbar = ({navigation}) => {
 
         {TabData.map(tab => (
           <Tab.Screen 
+
           
                             key={tab.id}
                             name={tab.name}
@@ -52,7 +53,8 @@ const BottomTabbar = ({navigation}) => {
                                   style={focused?{height:100, width:50, paddingLeft: 10, margintop:10 }:{height:100, width:50, paddingLeft: 10, margintop:-15 }}
                                 />
                               ),
-                              tabBarLabel:false,                            
+                              tabBarLabel:false,
+                                                         
             }}
           />
         ))}

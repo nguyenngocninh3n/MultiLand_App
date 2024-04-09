@@ -9,7 +9,7 @@ import { FlatList, ScrollView } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 
-const Post = ({navigation, user}) => {
+const Post = ({navigation}) => {
   const [PostData,setPostData] = useState([])
   
   useEffect(() => {
@@ -42,7 +42,7 @@ const Post = ({navigation, user}) => {
               horizontal={false}
               renderItem={({item}) => (                        
                   <View key={item.ownerID}>
-                    <PostHeader data={item} user={user} navigation={navigation} />
+                    <PostHeader data={item} navigation={navigation} />
                     <GetImage source={item.image}/>
                     <PostFooter data={item} />
                     

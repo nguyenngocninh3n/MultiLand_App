@@ -43,6 +43,7 @@ const LoginScreen = ({navigation}) => {
           }
         });
     }
+    console.log('hoan thanh')
     
   };
 

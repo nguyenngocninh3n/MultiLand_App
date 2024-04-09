@@ -64,7 +64,7 @@ export const TabData = [
   {
     id: 6,
     route: OwnerProfile,
-    name: 'Profile',
+    name: 'OwnerProfile',
     iconName: 'user',
     iconType: 'AntDesign',
     size: 35,

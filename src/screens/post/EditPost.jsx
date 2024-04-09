@@ -5,9 +5,6 @@ import Fire from "../../../Fire";
 
 export default EditPost = ({route, navigation}) => {
 
-    console.log('thong tin edit - route: ',route);
-    console.log('thong tin edit - route params: ',route.params.dataPost)
-
     const dataPost = route.params.dataPost;
     const [newContent, setNewContent] = useState(dataPost.content)
 

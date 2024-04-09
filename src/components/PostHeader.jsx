@@ -8,24 +8,26 @@ import firestore from "@react-native-firebase/firestore"
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Fire from '../../Fire';
 
-const PostHeader = ({data,user,navigation}) => {
+import auth from '@react-native-firebase/auth'
+
+const PostHeader = ({data, navigation}) => {
 
   const [options_state, setOptions_state] = useState(false)
 
-  // const [user,setUser] = useState({});
-  // useEffect(()=> {
-  //   firestore()
-  // .collection('users')
-  // .doc(data.ownerID)
-  // .get()
-  // .then(documentSnapshot => {
-  //   console.log('User exists: ', documentSnapshot.exists);
-  //   if (documentSnapshot.exists) {
-  //     console.log('PostHeader - User exist: ');
-  //     setUser(documentSnapshot.data())
-  //   }
-  // });
-  // },[])
+  const [user,setUser] = useState({});
+  useEffect(()=> {
+    firestore()
+  .collection('users')
+  .doc(data.ownerID)
+  .get()
+  .then(documentSnapshot => {
+    console.log('User exists: ', documentSnapshot.exists);
+    if (documentSnapshot.exists) {
+      console.log('PostHeader - User exist: ');
+      setUser(documentSnapshot.data())
+    }
+  });
+  },[])
 
 
 const formatDate = (timestamp) => {
@@ -70,13 +72,24 @@ const GetImage =({source}) => {
   else {  return ( <Image source={{uri:source}}   style={styles.userProfile}  />  )  }
 }
 
+const toProfile =() => {
+  if(auth().currentUser.uid != user.uid)
+    navigation.navigate('UserProfile', {dataUser: user})
+  else
+    navigation.jumpTo('OwnerProfile');
+}
+
   return (
     <View style={styles.postHeaderContainer}>
       <View style={styles.postTopSec}>
-        <View style={styles.row}>
+        <View style={styles.row} >
+          <TouchableOpacity onPress={toProfile}>
           <GetImage source={user.avatar} />
+          </TouchableOpacity>
           <View style={styles.userSection}>
-            <Text style={styles.username}>{user.name}</Text>
+           <TouchableOpacity onPress={toProfile} >
+           <Text style={styles.username}>{user.name}</Text>
+           </TouchableOpacity>
             <View style={styles.row}>
               <Text style={styles.days}>{formatDate(data.timestamp)}</Text>
               
