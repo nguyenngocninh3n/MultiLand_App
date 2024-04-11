@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Image, View, StyleSheet, TextInput, TouchableOpacity, Text } from "react-native";
 import Fire from "../../../Fire";
-
+import GoBackScreen from "../GoBackScreen";
 
 export default EditPost = ({route, navigation}) => {
 
@@ -15,9 +15,10 @@ export default EditPost = ({route, navigation}) => {
 
     return(
         <View style={styles.container}>
-        <Text style={styles.labelText}>Chỉnh sửa nội dung bài viết</Text>
-            <TextInput style={styles.textInput} 
-                       multiline={true} value={newContent}
+        <GoBackScreen navigation={navigation} label={'Chỉnh sửa bài viết'} />
+       
+            <TextInput textAlignVertical="top" multiline={true} style={styles.textInput} 
+                       value={newContent}
                        onChangeText={setNewContent} />
             <Image style={styles.image} source={{uri:dataPost.image}} />
             <TouchableOpacity onPress={onUpdatePost} style={styles.savePost}>
@@ -32,6 +33,7 @@ const styles = StyleSheet.create({
         width:'100%',
         height:'100%',
         padding:  20,
+        backgroundColor:'#fff'
     },
     labelText: {
         fontSize:20,
@@ -39,8 +41,10 @@ const styles = StyleSheet.create({
         marginBottom:10,
     },
     textInput: {
+        
         width:'100%',
-        height: 200,
+        height:300,
+
         backgroundColor:'#eee',
         marginBottom:20,
         borderWidth:1,

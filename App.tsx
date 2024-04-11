@@ -9,7 +9,7 @@ import MainScreen from './src/screens/MainScreen';
 import auth from '@react-native-firebase/auth';
 
 import EditPost from './src/screens/post/EditPost';
-import UserProfile from './src/screens/UserProfile';
+import UserProfile from './src/screens/profile/UserProfile';
 import NavigationOtherScreen from './src/screens/NavigationOtherScreen';
 const Stack = createStackNavigator();
 

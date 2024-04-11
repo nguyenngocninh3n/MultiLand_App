@@ -9,7 +9,7 @@ import auth from '@react-native-firebase/auth'
 import firestore from '@react-native-firebase/firestore'
 
 
-export default NewPost =({navigation, route}) => {
+export default NewPost =({navigation}) => {
 
    const [content, setContent] = useState("");
    const [image, setImage] = useState(null);
@@ -88,8 +88,8 @@ export default NewPost =({navigation, route}) => {
     return(
         <SafeAreaView style={styles.container}>
             <View style={styles.header}>
-                <TouchableOpacity >
-                    <Ionicon name="md-arrow-back"   size={24} color="#D8D9DB" />
+                <TouchableOpacity onPress={()=>navigation.goBack()} >
+                <AntDesign name="leftcircleo" color='#13f' size={30} />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={   handlePost     }>
                     <Text style={{fontSize:24, marginRight:20}}>Post</Text>

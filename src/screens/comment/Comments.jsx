@@ -108,13 +108,13 @@ export default Comments = ({dataPost}) => {
 
 
     return (
-        <View>
+        <View style={styles.container} >  
             <View height="85%">
                 <FlatList   style={{ backgroundColor:'#fff'}}
                 data={comments}
                 horizontal={false}
                 renderItem={({item}) => (
-                    <View style={styles.container}>
+                    <View style={styles.container_item}>
                         <View style={styles.row}>
                             <GetImage source={item.avatar} />
                             <View style={styles.column}> 
@@ -123,7 +123,6 @@ export default Comments = ({dataPost}) => {
                             </View>
                         </View>
                     </View>
-              
                 )}
                 />
             </View>
@@ -141,10 +140,11 @@ export default Comments = ({dataPost}) => {
     )
 }
 const styles = StyleSheet.create({
-  container: {
+  
+  container_item: {
       backgroundColor: '#eee',
       borderRadius: 20,
-      marginBottom:20,
+      marginTop:20,
       marginLeft: 10,
       marginRight:10,
       padding:5,
@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
     borderWidth:1,
     borderTopColor:'#dda',
     backgroundColor:'#eee',
-    marginTop:-40, 
+    marginTop:-50, 
     paddingLeft:10,
    
   },

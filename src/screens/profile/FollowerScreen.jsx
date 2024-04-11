@@ -8,6 +8,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 
 export default FollowerScreen = ({navigation, user}) => {
 
+    console.log('bat dau follower screen, in ra thong tin user: ',user)
     const [followers, setFollowers] = useState([])
     useEffect(()=> {
         firestore().collection('followers').doc(user.uid).get().then(documentSnapshot => {

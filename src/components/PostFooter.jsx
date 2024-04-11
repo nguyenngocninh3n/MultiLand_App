@@ -11,6 +11,7 @@ import auth from '@react-native-firebase/auth'
 import  Modal from 'react-native-modal';
 import Comments from '../screens/comment/Comments';
 
+import EvilIcons from 'react-native-vector-icons/EvilIcons'
 const PostFooter = ({data}) => {
 
   const [reaction,setReaction] = useState({})
@@ -120,7 +121,7 @@ const PostFooter = ({data}) => {
 
   const ShowComment = () => {
     return (
-      <View   >
+      
         <Modal isVisible={comment_state} 
                animationIn={'slideInUp'}
               //  animationInTiming={300}
@@ -132,7 +133,7 @@ const PostFooter = ({data}) => {
         >
           <Comments dataPost = {data} />
         </Modal>
-      </View>
+      
     )
   }
   
@@ -157,6 +158,7 @@ const PostFooter = ({data}) => {
           <TouchableOpacity onPress={onReaction}
             style={{backgroundColor:reaction_state?Colors.primaryColor:Colors.white}} 
             >
+            {/* <EvilIcons name='heart' size={20} /> */}
           <Text  style={styles.reactionCount}>Like</Text>
           </TouchableOpacity>
         </View>

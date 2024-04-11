@@ -5,17 +5,13 @@ import { View } from 'react-native';
 
 import GoBackScreen from './GoBackScreen';
 import NewPost from './post/NewPost';
-import UserProfile from './UserProfile';
-import FollowingScreen from './FollowingScreen';
-import FollowerScreen from './FollowerScreen';
+import UserProfile from './profile/UserProfile';
+import FollowingScreen from './profile/FollowingScreen';
+import FollowerScreen from './profile/FollowerScreen';
 
 import firestore from '@react-native-firebase/firestore'
 
 const NavigationOtherScreen = ({navigation, route}) => {
-  // console.log('navigation info at MainScreen: ', navigation)
-  // const name = route.params.name;
-  // const user = route.params.user;
-  // const navigation = route.params.navigation;
 
   const {name, user} = route.params;
 
@@ -27,19 +23,11 @@ const NavigationOtherScreen = ({navigation, route}) => {
         return <UserProfile navigation={navigation} user={user} />
       }
     else if (name == 'FollowingScreen' )  {
-      console.log('**********start following sreen')
-      console.log('...')
-      console.log('...')
-      console.log('...')
-      console.log('...')
-
       return <FollowingScreen  navigation={navigation} user={user}   />
-
     }
     else if (name == "FollowerScreen") 
       return <FollowerScreen  navigation={navigation} user={user}  />
-
-  }
+   }
 
   return (
 

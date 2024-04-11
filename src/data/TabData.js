@@ -3,8 +3,8 @@ import HomeScreen from '../screens/HomeScreen';
 import NotificationScreen from '../screens/NotificationScrren';
 import NewPost from '../screens/post/NewPost';
 
-import OwnerProfile from '../screens/OwnerProfile';
-import UserProfile from '../screens/UserProfile';
+import OwnerProfile from '../screens/profile/OwnerProfile';
+import UserProfile from '../screens/profile/UserProfile';
 export const TabData = [
   {
     id: 1,

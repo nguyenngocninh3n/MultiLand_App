@@ -14,7 +14,7 @@ import Logo from '../assets/images/logo.png';
 import textLogo from '../assets/images/text-logo.png';
 import auth from '@react-native-firebase/auth';
 
-import Profile from './OwnerProfile';
+import Profile from './profile/OwnerProfile';
 
 
 const LoginScreen = ({navigation}) => {

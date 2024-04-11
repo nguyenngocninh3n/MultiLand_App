@@ -7,10 +7,9 @@ export  const Colors = {
   borderGrey: '#BEBEBE',
   green: '#45bd62',
   background: '#c9ccd1',
-  storyImageBg: '#f0f1f2',
+  storyImageBg: '#f0f1f20',
   textColor: '#26282b',
   textGrey: '#989FA7',
   headerIconGrey: '#606770',
   notify: '#f0f8ff',
-
-};
+}
