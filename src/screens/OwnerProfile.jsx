@@ -79,12 +79,8 @@ const GetImage =({source, style}) => {
         contentContainerStyle={{justifyContent: 'center', alignItems: 'center'}}
         showsVerticalScrollIndicator={false}>
         <GetImage source={user.avatar} style={styles.userImg} />
-        
         <Text style={styles.userName}>{user.name}</Text>
-       
-       
         <View style={styles.userBtnWrapper}>
-    
               <TouchableOpacity
                 style={styles.userBtn}
                 onPress={() => {
@@ -95,8 +91,6 @@ const GetImage =({source, style}) => {
               <TouchableOpacity style={styles.userBtn} onPress={onLogout}>
                 <Text style={styles.userBtnTxt}>Logout</Text>
               </TouchableOpacity>
-          
-        
         </View>
         <View style={styles.userInfoWrapper}>
           <View style={styles.userInfoItem}>
@@ -104,12 +98,24 @@ const GetImage =({source, style}) => {
             <Text style={styles.userInfoSubTitle}>Posts</Text>
           </View>
           <View style={styles.userInfoItem}>
-            <Text style={styles.userInfoTitle}>0</Text>
-            <Text style={styles.userInfoSubTitle}>Followers</Text>
+              <TouchableOpacity
+               onPress={()=>{ 
+               navigation.navigate('NavigationOtherScreen', {name:'FollowerScreen', user:user})}
+               }>
+                 <Text style={styles.userInfoTitle}>{user.follower}</Text>
+                  <Text style={styles.userInfoSubTitle}>Followers</Text>
+             </TouchableOpacity>
           </View>
           <View style={styles.userInfoItem}>
-            <Text style={styles.userInfoTitle}>0</Text>
-            <Text style={styles.userInfoSubTitle}>Following</Text>
+              <TouchableOpacity
+               onPress={()=> 
+               {
+                navigation.navigate('NavigationOtherScreen',{name:'FollowingScreen', navigation:navigation, user:user})}
+               }
+              >
+                  <Text style={styles.userInfoTitle}>{user.following}</Text>
+                  <Text style={styles.userInfoSubTitle}>Following</Text>
+              </TouchableOpacity>
           </View>
         </View>
 
@@ -119,13 +125,11 @@ const GetImage =({source, style}) => {
              data={PostData}
               horizontal={false}
               renderItem={({item}) => (
-                              
                   <View style={{width:"100%",flex:1}} key={item.ownerID}>
                     <PostHeader data={item} user={user} />
                     <GetImage source={item.image} style={styles.postImg} />
                     <PostFooter data={item} />
                 </View>
-                
               )}
         />
     

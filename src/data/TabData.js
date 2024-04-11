@@ -1,10 +1,6 @@
 import FriendScreen from '../screens/FriendScreen';
 import HomeScreen from '../screens/HomeScreen';
-import MarketPlaceScreen from '../screens/MarketPlaceScreen';
 import NotificationScreen from '../screens/NotificationScrren';
-import ProfileScreen from '../screens/ProfileScreen';
-import WatchScreen from '../screens/WatchScreen';
-import Profile from '../screens/OwnerProfile'
 import NewPost from '../screens/post/NewPost';
 
 import OwnerProfile from '../screens/OwnerProfile';

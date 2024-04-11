@@ -1,15 +1,56 @@
 import React from 'react';
 import Header from '../components/Header';
 import BottomTabbar from '../navigation/BottomTabbar';
+import { View } from 'react-native';
 
-const MainScreen = ({navigation}) => {
-  console.log('navigation info at MainScreen: ', navigation)
+import GoBackScreen from './GoBackScreen';
+import NewPost from './post/NewPost';
+import UserProfile from './UserProfile';
+import FollowingScreen from './FollowingScreen';
+import FollowerScreen from './FollowerScreen';
+
+import firestore from '@react-native-firebase/firestore'
+
+const NavigationOtherScreen = ({navigation, route}) => {
+  // console.log('navigation info at MainScreen: ', navigation)
+  // const name = route.params.name;
+  // const user = route.params.user;
+  // const navigation = route.params.navigation;
+
+  const {name, user} = route.params;
+
+  const GetScreen =() => {
+    if(name == "NewPost") return <NewPost />
+    else if (name == 'UserProfile') 
+      {
+        console.log('bat dau user profile')
+        return <UserProfile navigation={navigation} user={user} />
+      }
+    else if (name == 'FollowingScreen' )  {
+      console.log('**********start following sreen')
+      console.log('...')
+      console.log('...')
+      console.log('...')
+      console.log('...')
+
+      return <FollowingScreen  navigation={navigation} user={user}   />
+
+    }
+    else if (name == "FollowerScreen") 
+      return <FollowerScreen  navigation={navigation} user={user}  />
+
+  }
+
   return (
-    <>
-      <Header navigation={navigation} />
-      <BottomTabbar navigation={navigation}  />
-    </>
+
+    <View>
+      <GoBackScreen navigation={navigation}/>
+      <View style={{height:'100%'}}>
+      <GetScreen />
+      </View>
+    </View>
+
   );
 };
 
-export default MainScreen;
+export default NavigationOtherScreen;

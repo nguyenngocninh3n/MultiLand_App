@@ -10,7 +10,7 @@ import auth from '@react-native-firebase/auth';
 
 import EditPost from './src/screens/post/EditPost';
 import UserProfile from './src/screens/UserProfile';
-
+import NavigationOtherScreen from './src/screens/NavigationOtherScreen';
 const Stack = createStackNavigator();
 
 const App = () => {
@@ -36,6 +36,7 @@ const App = () => {
              <Stack.Screen name="MainScreen"  component={MainScreen} />
              <Stack.Screen name="EditPost"  component={EditPost} />
              <Stack.Screen name='UserProfile' component={UserProfile} />
+             <Stack.Screen name='NavigationOtherScreen' component={NavigationOtherScreen} />
          </>
           :
           <>

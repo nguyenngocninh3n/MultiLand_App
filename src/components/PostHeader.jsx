@@ -74,8 +74,8 @@ const GetImage =({source}) => {
 
 const toProfile =() => {
   if(auth().currentUser.uid != user.uid)
-    navigation.navigate('UserProfile', {dataUser: user})
-  else
+    navigation.navigate('NavigationOtherScreen',{name:'UserProfile', user:user})
+    else
     navigation.jumpTo('OwnerProfile');
 }
 

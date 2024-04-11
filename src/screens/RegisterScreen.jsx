@@ -52,6 +52,8 @@ const RegisterScreen = ({navigation}) => {
                     sex: true,
                     birthday: Date.now(),
                     uid: auth().currentUser.uid,
+                    following: 0,
+                    follower: 0,
                     })
                 .then(() => {
                     console.log('User added!');
