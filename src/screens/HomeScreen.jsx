@@ -24,13 +24,15 @@ const HomeScreen = ({navigation}) => {
   },[])
 
   return (
-    <ScrollView >
+    
+      <ScrollView style={{ marginLeft:0}} >
       <View style={{flexDirection:'column'}}>
       <SubHeader navigation={navigation} user={user} />
       <Stories user={user} />
     <Post navigation={navigation} />
     </View>
     </ScrollView>
+  
   );
 };
 

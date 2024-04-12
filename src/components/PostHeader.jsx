@@ -1,4 +1,4 @@
-import {View, Image, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import {View, Image, StyleSheet, Text, TouchableOpacity, TouchableHighlight } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import UserProfile from '../assets/images/post1.jpeg';
 import {Colors} from '../utils/Colors';
@@ -45,19 +45,19 @@ const onDeletePost = async () => {
 
 const GetOptions = () => {
   return (
-    <SafeAreaView style={{flexDirection:'column', justifyContent:'center'}}>
-      <Modal style={{height:'80%',width:'100%',marginTop:300, backgroundColor:'#eea'}}
+    <SafeAreaView style={{flexDirection:'column',  justifyContent:'center'}}>
+      <Modal style={{flexDirection:'column', marginLeft:0, marginBottom:0, justifyContent:'flex-start',height:'80%',width:'100%', marginTop:300, backgroundColor:'#fff'}}
           onBackdropPress={()=>setOptions_state(false)}
           onBackButtonPress={()=>setOptions_state(false)}
           isVisible={options_state}
           
       >
-          <View style={{width:'100%',height:50,borderWidth:1,backgroundColor:'#eee'}}>
-            <TouchableOpacity onPress={()=>{navigation.navigate('EditPost', {dataPost: data})}}>
+          <View style={styles.optionText}>
+            <TouchableOpacity  onPress={()=>{navigation.navigate('EditPost', {dataPost: data})}}>
               <Text>Sửa bài viết</Text>
             </TouchableOpacity>
           </View>
-          <View style={{width:'100%',height:50,borderWidth:1,backgroundColor:'#eee'}}>
+          <View style={styles.optionText}>
             <TouchableOpacity onPress={onDeletePost}>
               <Text>Xóa bài viết</Text>
             </TouchableOpacity>
@@ -116,6 +116,15 @@ const toProfile =() => {
 const styles = StyleSheet.create({
   postHeaderContainer: {
     padding: 16,
+  },
+
+  optionText: {
+    width:'100%', 
+    borderColor:'#eee', 
+    paddingLeft:10, 
+    justifyContent:'center',
+    height:50,
+    borderWidth:1,
   },
 
   userProfile: {
