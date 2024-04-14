@@ -9,27 +9,33 @@ export default ChatScreen = ({navigation,user_1_Data, user_2_Data}) => {
     var user_1 = user_1_Data;
     var user_2 = user_2_Data;
     const [chats, setChats] = useState([])
+    const [doc_chatID, setDoc_chatID] = useState({});
     // const [userChat_state, setUserChat_state] = useState(null)
+    
     var userChat_state = null;
     const [contentValue, setContenValue] = useState('')
 
     useEffect(()=>{
         firestore().collection('chats').doc(user_1.uid + user_2.uid).onSnapshot((res)=> {
-            if(res != null && res != undefined) {
-                console.log('chat data co ton tai!',res.data())
+            if(res.data() != null && res.data() != undefined) {
+                console.log('............luồng làm việc: đi vào if 1')
+
+                setDoc_chatID(user_1_Data.uid+user_2_Data.uid)
                 setChats(res.data())
             }
             else {
                 firestore().collection('chats').doc(user_2.uid + user_1.uid).onSnapshot((res)=> {
                     if(res.data() != null && res.data() != undefined) {
-                        console.log('chat data co ton tai!',res.data())
+                    console.log('............luồng làm việc: đi vào if 2')
+
                         let user_temp = user_1;
                         user_1 = user_2;
                         user_2 = user_temp;
+                        setDoc_chatID(user_2_Data.uid+user_1_Data.uid)
                         setChats(res.data())
                     }
                     else {
-                        
+                        console.log('chat data khong ton tai')
                     }
             })}
         })
@@ -51,12 +57,12 @@ export default ChatScreen = ({navigation,user_1_Data, user_2_Data}) => {
     }
 
     const ShowOneChat = ({avatar, content, stylechat, id}) => {
-        console.log('gai tri tham so:',avatar,' ',content,' ',stylechat)
+        // console.log('gai tri tham so:',avatar,' ',content,' ',stylechat)
         // setUserChat_state(id);
         userChat_state = id;
         return (
             <View style={stylechat}>
-                <View style={{width:50}}><GetImage style={styles.avatar} source={avatar} /></View>
+                <View style={{width:50, height:50, marginTop:30,}}><GetImage source={avatar} /></View>
                 <View><Text style={styles.content}>{content}</Text></View>
             </View>
         )
@@ -64,7 +70,6 @@ export default ChatScreen = ({navigation,user_1_Data, user_2_Data}) => {
 
 
     const ShowChat = (item) => {
-        console.log('gia tri cua item la: ',item.item)
         if(item.item.userID == user_1.uid) {
             if(item.item.userID == userChat_state)
             return (<View>
@@ -103,28 +108,38 @@ export default ChatScreen = ({navigation,user_1_Data, user_2_Data}) => {
         }
     }
 
+    const showLog = () => {
+        console.log('sau khi them chat data lan 1: ****\n \n \n \n ');
+        console.log('user_1', user_1.uid)
+        console.log('user_2', user_2.uid)
+        console.log('docID', doc_chatID);
+    }
 
     const AddChat = () => {
+        console.log('kiem tra thong tin: ****\n \n \n \n ');
+        console.log('user_1', user_1.uid)
+        console.log('user_2', user_2.uid)
+        console.log('docID', doc_chatID);
+
         let value = contentValue;
         setContenValue('')
         let timestamp = Date.now();
-        firestore().collection('chats').doc(user_1.uid + user_2.uid).get().then((res)=> {
+        firestore().collection('chats').doc(doc_chatID).get().then((res)=> {
             if(res.exists) {
-                console.log('chat data co ton tai!', chats.data)
                 let arr = chats.data;
                 arr.push( {
                     userID: user_1.uid,
                     content:value,
                     timestamp: timestamp,
                 })
-                firestore().collection('chats').doc(user_1.uid+user_2.uid).update({
+                firestore().collection('chats').doc(doc_chatID).update({
                     data: arr,
                 }).catch(error=>console.log('loi khi cap nhat chat data: ',error))
-
+               
             }
             else {
                 console.log('chat data khong ton tai!');    
-                firestore().collection('chats').doc(user_1.uid+user_2.uid).set({
+                firestore().collection('chats').doc(doc_chatID).set({
                     chatID: user_1.uid+user_2.uid,
                     userID_1: user_1.uid,
                     userID_2: user_2.uid,
@@ -139,7 +154,7 @@ export default ChatScreen = ({navigation,user_1_Data, user_2_Data}) => {
                     }],
                 })
                 .then(res=> {console.log('them chat data thanh cong: ',res);
-                             setInit(true)})
+                            })
                 .catch(error => console.log('loi khi them chat data: ', error) )   
             }
         })
@@ -171,6 +186,11 @@ export default ChatScreen = ({navigation,user_1_Data, user_2_Data}) => {
                 >
                 <Text style={styles.btnSend}>Gửi</Text>
                 </TouchableOpacity>
+                <TouchableOpacity
+                    onPress={showLog}
+                >
+                <Text style={{backgroundColor:'#f00', height:50}}>CheckLog</Text>
+                </TouchableOpacity>
              </View>
         </SafeAreaView>
 
@@ -179,6 +199,7 @@ export default ChatScreen = ({navigation,user_1_Data, user_2_Data}) => {
 
 const styles = StyleSheet.create({
     container: {
+        flexDirection:'column'
 
     },
     chat_header: {
@@ -200,6 +221,7 @@ const styles = StyleSheet.create({
     },
     chat_container: {
         // width:'85%',
+        height:'50%',
         paddingLeft:12,
         paddingRight:12,
     },

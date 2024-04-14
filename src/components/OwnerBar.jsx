@@ -1,7 +1,8 @@
 import { StyleSheet, Text, TouchableOpacity, View, Alert } from "react-native";
 import auth from '@react-native-firebase/auth';
+import RNRestart from 'react-native-restart'; 
 
-// import  from 'rest'
+
 export default OwnerBar =({navigation}) =>{
 
     const onLogout = () => {
@@ -9,7 +10,7 @@ export default OwnerBar =({navigation}) =>{
         .signOut()
         .then(() => {
             Alert.alert('Thong bao','User signed out!')
-            navigation.navigate('MainScreen')
+            RNRestart.Restart();
         })
         .catch(error => console.log('error :', error));
     };
