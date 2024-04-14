@@ -21,7 +21,6 @@ import { TransitionIOSSpec } from '@react-navigation/stack/lib/typescript/src/Tr
 
 const UserProfile = ({navigation, user}) => {
 
-  // const [user, setUser] = useState(user)
   const [PostData,setPostData] = useState([])
  
   useEffect(() => {

@@ -8,7 +8,7 @@ export default ProfileHeader = ({navigation, PostData, userData}) => {
 
   console.log('bat dau ham profile')
   console.log('gia tri use data dau tien: ',userData)
-  let temp = userData
+ 
   const [user, setUser] = useState(userData)
 
 console.log('gia tri use dau tien: ',user)
@@ -16,13 +16,13 @@ console.log('gia tri use dau tien: ',user)
         firestore().collection("users").doc(userData.uid).onSnapshot((res) => {
          
           if(res != null) 
-            console.log('comments exists')
+            {
+              console.log('comments exists')
                 setUser(res.data());
+            }
         })
-        console.log('gia tri user thu hai: ',user)
        
    },[userData])
-   console.log('gia tri use thu 3: ',user)
 
 
     const GetImage =({source, style}) => {
@@ -32,7 +32,7 @@ console.log('gia tri use dau tien: ',user)
 
     const GetBar =(userItem) => {
       // userItem = userData;
-          if(userItem.uid == auth().currentUser.uid) return <OwnerBar />
+          if(userData.uid == auth().currentUser.uid) return <OwnerBar />
         else return <UserBar navigation={navigation} userData={userData} />
     }
 

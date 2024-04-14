@@ -8,13 +8,12 @@ import NewPost from './post/NewPost';
 import UserProfile from './profile/UserProfile';
 import FollowingScreen from './profile/FollowingScreen';
 import FollowerScreen from './profile/FollowerScreen';
-
+import ChatScreen from './chat/ChatScreen';
 import firestore from '@react-native-firebase/firestore'
 
 const NavigationOtherScreen = ({navigation, route}) => {
 
   const {name, user} = route.params;
-
   const GetScreen =() => {
     if(name == "NewPost") return <NewPost />
     else if (name == 'UserProfile') 
@@ -27,7 +26,13 @@ const NavigationOtherScreen = ({navigation, route}) => {
     }
     else if (name == "FollowerScreen") 
       return <FollowerScreen  navigation={navigation} user={user}  />
+      else if (name == 'ChatScreen') {
+        const user_2 = route.params.user_2;
+        return <ChatScreen navigation={navigation} user_1_Data={user} user_2_Data ={user_2} />
+      }
+
    }
+   
 
   return (
 

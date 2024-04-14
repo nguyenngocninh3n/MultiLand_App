@@ -3,7 +3,7 @@ import { Image, View, StyleSheet, TextInput, TouchableOpacity, Text } from "reac
 import Fire from "../../../Fire";
 import GoBackScreen from "../GoBackScreen";
 
-export default EditPost = ({route, navigation}) => {
+export default EditPost = ({ navigation,route}) => {
 
     const dataPost = route.params.dataPost;
     const [newContent, setNewContent] = useState(dataPost.content)

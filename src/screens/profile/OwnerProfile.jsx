@@ -37,7 +37,8 @@ const OwnerProfile = ({navigation}) => {
   const [PostData,setPostData] = useState([])
   const temp = getUser;
   console.log('gia tri temp: ',temp)
-  const [user,setUser] = useState(temp);
+  const [user,setUser] = useState({});
+  
   console.log('------------------kiem tra gia tri user: ', user)
   useEffect(()=> {
     firestore()
@@ -77,10 +78,8 @@ const OwnerProfile = ({navigation}) => {
 const GetProfile = () => {
 
   console.log('*****************************Thong tin user: ', user)
-  return (
-    <ProfileHeader navigation={navigation} userData={user} PostData={PostData} />
-  )
-
+  return   <ProfileHeader navigation={navigation} userData={user} PostData={PostData} />
+  
 
 }
 
@@ -92,7 +91,7 @@ const GetProfile = () => {
         contentContainerStyle={{justifyContent: 'center', alignItems: 'center'}}
         showsVerticalScrollIndicator={false}>
         <View>
-        <GetProfile />
+        <GetProfile userData={user} />
     {/* <ProfileHeader navigation={navigation} userData={user} PostData={PostData} /> */}
 
         </View>

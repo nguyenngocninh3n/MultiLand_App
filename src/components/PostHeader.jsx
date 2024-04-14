@@ -43,6 +43,11 @@ const onDeletePost = async () => {
   await Fire.shared.deletePost({postID: data.postID});
 }
 
+const ShowOptions =  () => {
+  if(auth().currentUser.uid == data.ownerID) return <Text style={{fontSize:24, fontWeight:'900'}}>...</Text>
+
+}
+
 const GetOptions = () => {
   return (
     <SafeAreaView style={{flexDirection:'column',  justifyContent:'center'}}>
@@ -52,14 +57,14 @@ const GetOptions = () => {
           isVisible={options_state}
           
       >
-          <View style={styles.optionText}>
+          <View style={styles.optionContainer_item}>
             <TouchableOpacity  onPress={()=>{navigation.navigate('EditPost', {dataPost: data})}}>
-              <Text>Sửa bài viết</Text>
+              <Text style={styles.optionText}>Sửa bài viết</Text>
             </TouchableOpacity>
           </View>
-          <View style={styles.optionText}>
+          <View style={styles.optionContainer_item}>
             <TouchableOpacity onPress={onDeletePost}>
-              <Text>Xóa bài viết</Text>
+              <Text style={styles.optionText} >Xóa bài viết</Text>
             </TouchableOpacity>
           </View>
       </Modal>
@@ -101,7 +106,7 @@ const toProfile =() => {
             setOptions_state(true);
      
           }}>
-          <Text style={{fontSize:24, fontWeight:'900'}}>...</Text>
+          <ShowOptions />
           </TouchableOpacity>
         </View>
        
@@ -118,13 +123,17 @@ const styles = StyleSheet.create({
     padding: 16,
   },
 
-  optionText: {
+  optionContainer_item: {
     width:'100%', 
     borderColor:'#eee', 
     paddingLeft:10, 
     justifyContent:'center',
     height:50,
     borderWidth:1,
+  },
+  optionText: {
+      fontWeight:'700',
+      fontSize:18,
   },
 
   userProfile: {

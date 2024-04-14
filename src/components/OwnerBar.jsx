@@ -1,12 +1,16 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View, Alert } from "react-native";
 import auth from '@react-native-firebase/auth';
 
+// import  from 'rest'
 export default OwnerBar =({navigation}) =>{
 
     const onLogout = () => {
         auth()
         .signOut()
-        .then(() => Alert.alert('Thong bao','User signed out!'))
+        .then(() => {
+            Alert.alert('Thong bao','User signed out!')
+            navigation.navigate('MainScreen')
+        })
         .catch(error => console.log('error :', error));
     };
 

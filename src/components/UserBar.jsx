@@ -177,6 +177,10 @@ export default UserBar = ({navigation,userData }) =>{
               <TouchableOpacity style={{backgroundColor:'#1ff', padding:10}} onPress={onFollow} >
                 <Text style={styles.userBtnTxt}>{follow_state?'Following':'Follow'}</Text>
               </TouchableOpacity>
+              <TouchableOpacity style={{backgroundColor:'#1ff', padding:10}} onPress={
+                ()=>navigation.navigate('NavigationOtherScreen',{name:'ChatScreen',user:follow_user, user_2:userData})} >
+                <Text style={styles.userBtnTxt}>Nhắn tin</Text>
+              </TouchableOpacity>
         </View>
 
     )
