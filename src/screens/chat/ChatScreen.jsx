@@ -1,7 +1,6 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import firestore from '@react-native-firebase/firestore'
-import { SafeAreaView, StyleSheet, View, Text, Image, TouchableOpacity } from "react-native"
-import { FlatList, TextInput } from "react-native-gesture-handler"
+import { SafeAreaView, FlatList, TextInput, StyleSheet, View, Text, Image, TouchableOpacity } from "react-native"
 
 
 export default ChatScreen = ({navigation,user_1_Data, user_2_Data}) => {
@@ -9,9 +8,11 @@ export default ChatScreen = ({navigation,user_1_Data, user_2_Data}) => {
     var user_1 = user_1_Data;
     var user_2 = user_2_Data;
     const [chats, setChats] = useState([])
+    const [chats_length, setChats_length] = useState(1);
     const [doc_chatID, setDoc_chatID] = useState({});
     // const [userChat_state, setUserChat_state] = useState(null)
-    
+   
+  
     var userChat_state = null;
     const [contentValue, setContenValue] = useState('')
 
@@ -22,6 +23,7 @@ export default ChatScreen = ({navigation,user_1_Data, user_2_Data}) => {
 
                 setDoc_chatID(user_1_Data.uid+user_2_Data.uid)
                 setChats(res.data())
+                // if(res.data().data.length != undefined) { setChats_length(res.data().data.length)}
             }
             else {
                 firestore().collection('chats').doc(user_2.uid + user_1.uid).onSnapshot((res)=> {
@@ -33,15 +35,26 @@ export default ChatScreen = ({navigation,user_1_Data, user_2_Data}) => {
                         user_2 = user_temp;
                         setDoc_chatID(user_2_Data.uid+user_1_Data.uid)
                         setChats(res.data())
+                // if(res.data().data.length != undefined) { setChats_length(res.data().data.length)}
+                        
                     }
                     else {
                         console.log('chat data khong ton tai')
                     }
             })}
         })
+       
     },[])
     
-    
+    useEffect(() => {
+        if(chats.data != undefined) {
+                let arr =chats.data;
+                setChats_length(arr.length)
+        }
+    }
+        
+    ,[chats])
+
     const formatDate = (timestamp) => {
         const options = {
           year: 'numeric',
@@ -62,7 +75,7 @@ export default ChatScreen = ({navigation,user_1_Data, user_2_Data}) => {
         userChat_state = id;
         return (
             <View style={stylechat}>
-                <View style={{width:50, height:50, marginTop:30,}}><GetImage source={avatar} /></View>
+                <View style={{width:50, height:50, marginTop:20, marginLeft:20,}}><GetImage source={avatar} /></View>
                 <View><Text style={styles.content}>{content}</Text></View>
             </View>
         )
@@ -70,6 +83,7 @@ export default ChatScreen = ({navigation,user_1_Data, user_2_Data}) => {
 
 
     const ShowChat = (item) => {
+
         if(item.item.userID == user_1.uid) {
             if(item.item.userID == userChat_state)
             return (<View>
@@ -106,6 +120,7 @@ export default ChatScreen = ({navigation,user_1_Data, user_2_Data}) => {
                                      />
             }       
         }
+        
     }
 
     const showLog = () => {
@@ -113,6 +128,7 @@ export default ChatScreen = ({navigation,user_1_Data, user_2_Data}) => {
         console.log('user_1', user_1.uid)
         console.log('user_2', user_2.uid)
         console.log('docID', doc_chatID);
+        console.log('gia tri chat: ',chats.data)
     }
 
     const AddChat = () => {
@@ -166,21 +182,42 @@ export default ChatScreen = ({navigation,user_1_Data, user_2_Data}) => {
  
     }
 
+    const GetFlatList = () => {
+        let arr = [{}];
+        if(chats.data != undefined) {
+            arr = chats.data;
+        }
+        console.log('---------------length chat data: ',arr)
+        if(chats.data != undefined) return ( 
+            <View>
+                <FlatList style={styles.chat_container}
+                        // keyExtractor={(item,index)=>index.toString()}
+                        // initialNumToRender={chats_length-1}
+                        // onScrollToIndexFailed={()=>{}}
+                        // initialScrollIndex={18}
+
+                        // data={chats.data}
+                        // horizontal={false}
+                        // onLayout={() => {}}
+
+                        inverted
+                        data={[...chats.data].reverse()}
+                        renderItem={({item})=>(
+                            <ShowChat item={item} />
+                        )}  
+                />
+        </View>
+        )
+    }
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.chat_header}>
                 <GetImage style={styles.avatar} source={user_2.avatar} />
                 <Text style={styles.textName}>{user_2.name}</Text>
             </View>
-            <FlatList style={styles.chat_container}
-                    data={chats.data}
-                    horizontal={false}
-                    renderItem={({item})=>(
-                        <ShowChat item={item} />
-                    )}  
-             />
+            <GetFlatList / >
              <View>
-                <TextInput style={styles.textInput} value={contentValue} onChangeText={(value) =>{setContenValue(value)}} />
+                <TextInput autoFocus={true} style={styles.textInput} value={contentValue} onChangeText={(value) =>{setContenValue(value)}} />
                 <TouchableOpacity
                     onPress={sendChat}
                 >
