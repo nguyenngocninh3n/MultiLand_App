@@ -11,6 +11,8 @@ import {
   Alert,
 } from 'react-native';
 
+
+
 import { Colors } from '../../utils/Colors';
 import auth from '@react-native-firebase/auth';
 
@@ -19,6 +21,13 @@ import PostFooter from '../../components/PostFooter';
 import firestore from '@react-native-firebase/firestore'
 
 import ProfileHeader from '../../components/ProfileHeader';
+import ChangePasswordScreen from '../Authentication/ChangePasswordScreen';
+import 'react-native-gesture-handler'
+import { createDrawerNavigator } from '@react-navigation/drawer';
+
+const Drawer = createDrawerNavigator();
+
+
 const OwnerProfile = ({navigation}) => {
   const getUser = () => {
     let temp_user = {};
@@ -75,44 +84,56 @@ const OwnerProfile = ({navigation}) => {
     else {   return (   <Image source={{uri:source}} style={style} />  )  }
 }
 
-const GetProfile = () => {
+  const GetProfile = () => {
 
-  console.log('*****************************Thong tin user: ', user)
-  return   <ProfileHeader navigation={navigation} userData={user} PostData={PostData} />
-  
+    console.log('*****************************Thong tin user: ', user)
+    return   <ProfileHeader navigation={navigation} userData={user} PostData={PostData} />
+    
 
-}
+  }
 
-
-  return (
-    <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
-      <ScrollView
-        style={styles.container}
-        contentContainerStyle={{justifyContent: 'center', alignItems: 'center'}}
-        showsVerticalScrollIndicator={false}>
-        <View>
-        <GetProfile userData={user} />
-    {/* <ProfileHeader navigation={navigation} userData={user} PostData={PostData} /> */}
-
+  const GetScreen = () => {
+    return (
+      <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
+        <ScrollView
+          style={styles.container}
+          contentContainerStyle={{justifyContent: 'center', alignItems: 'center'}}
+          showsVerticalScrollIndicator={false}>
+          <View>
+          <GetProfile userData={user} />
+          </View>
+          <View style={styles.postContainer}>
+            <FlatList
+              scrollEnabled={false}
+              data={PostData}
+                horizontal={false}
+                renderItem={({item}) => (
+                    <View style={{width:"100%",flex:1}} key={item.ownerID}>
+                      <PostHeader data={item} navigation={navigation} user={user} />
+                      <GetImage source={item.image} style={styles.postImg} />
+                      <PostFooter data={item} />
+                  </View>
+                )}
+          />
         </View>
-        <View style={styles.postContainer}>
-          <FlatList
-             scrollEnabled={false}
-             data={PostData}
-              horizontal={false}
-              renderItem={({item}) => (
-                  <View style={{width:"100%",flex:1}} key={item.ownerID}>
-                    <PostHeader data={item} navigation={navigation} user={user} />
-                    <GetImage source={item.image} style={styles.postImg} />
-                    <PostFooter data={item} />
-                </View>
-              )}
-        />
-      </View>
-      </ScrollView>
-    </SafeAreaView>
-  );
-};
+        </ScrollView>
+      </SafeAreaView>
+  )}
+
+
+  const Logout = () => {
+    
+  }
+  return (
+      <Drawer.Navigator initialRouteName='GetScreen' 
+      
+                        screenOptions={{ headerTitle: '',
+                        }}>
+          <Drawer.Screen options={{title:'Trang cá nhân'}}  name="GetScreen" component={GetScreen} />
+          <Drawer.Screen options={{title:'Đổi mật khẩu'}} name="ChangePasswordScreen" component={ChangePasswordScreen} />
+          <Drawer.Screen options={{title:'Đăng xuất'}} name="Logout" component={Logout} />
+      </Drawer.Navigator>
+    )};
 
 export default OwnerProfile;
 
