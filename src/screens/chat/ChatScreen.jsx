@@ -1,16 +1,17 @@
 import { useEffect, useRef, useState } from "react"
 import firestore from '@react-native-firebase/firestore'
 import { SafeAreaView, FlatList, TextInput, StyleSheet, View, Text, Image, TouchableOpacity } from "react-native"
+import { TouchableHighlight } from "react-native-gesture-handler";
 
+import AntDesign  from 'react-native-vector-icons/dist/AntDesign';
 
-export default ChatScreen = ({navigation,user_1_Data, user_2_Data}) => {
+export default ChatScreen = ({navigation, oldScreen, user_1_Data, user_2_Data}) => {
 
     var user_1 = user_1_Data;
     var user_2 = user_2_Data;
     const [chats, setChats] = useState([])
     const [chats_length, setChats_length] = useState(1);
-    const [doc_chatID, setDoc_chatID] = useState({});
-    // const [userChat_state, setUserChat_state] = useState(null)
+    const [doc_chatID, setDoc_chatID] = useState(null);
    
   
     var userChat_state = null;
@@ -23,7 +24,6 @@ export default ChatScreen = ({navigation,user_1_Data, user_2_Data}) => {
 
                 setDoc_chatID(user_1_Data.uid+user_2_Data.uid)
                 setChats(res.data())
-                // if(res.data().data.length != undefined) { setChats_length(res.data().data.length)}
             }
             else {
                 firestore().collection('chats').doc(user_2.uid + user_1.uid).onSnapshot((res)=> {
@@ -35,8 +35,6 @@ export default ChatScreen = ({navigation,user_1_Data, user_2_Data}) => {
                         user_2 = user_temp;
                         setDoc_chatID(user_2_Data.uid+user_1_Data.uid)
                         setChats(res.data())
-                // if(res.data().data.length != undefined) { setChats_length(res.data().data.length)}
-                        
                     }
                     else {
                         console.log('chat data khong ton tai')
@@ -69,14 +67,16 @@ export default ChatScreen = ({navigation,user_1_Data, user_2_Data}) => {
         else {  return ( <Image source={{uri:source}}   style={styles.avatar}  />  )  }
     }
 
-    const ShowOneChat = ({avatar, content, stylechat, id}) => {
-        // console.log('gai tri tham so:',avatar,' ',content,' ',stylechat)
-        // setUserChat_state(id);
+    const ShowOneChat = ({avatar, content, stylechat,styleContent, id}) => {
         userChat_state = id;
         return (
             <View style={stylechat}>
-                <View style={{width:50, height:50, marginTop:20, marginLeft:20,}}><GetImage source={avatar} /></View>
-                <View><Text style={styles.content}>{content}</Text></View>
+                <View style={styles.item_container} >
+                    <View style={styles.item_avatar}> 
+                        <GetImage source={avatar} />
+                    </View>
+                    <Text style={styleContent}>{content}</Text>
+                </View>
             </View>
         )
     } 
@@ -90,15 +90,16 @@ export default ChatScreen = ({navigation,user_1_Data, user_2_Data}) => {
                 < ShowOneChat avatar= ''
                 content= {item.item.content}
                 stylechat = {styles.styleUser_1}
+                styleContent = {styles.item_content_1}
                  id={item.item.userID}
                   />
             </View>)
             else {
-                // setUserChat_state(item.item.userID);
                 return (<View>
                     < ShowOneChat avatar= ''
                     content= {item.item.content}
                     stylechat = {styles.styleUser_1 }
+                    styleContent = {styles.item_content_1}
                     id={item.item.userID}
                      />
                 </View>)
@@ -109,13 +110,14 @@ export default ChatScreen = ({navigation,user_1_Data, user_2_Data}) => {
                 return < ShowOneChat avatar= {null} 
                                     content= {item.item.content}
                                     stylechat = {styles.styleUser_2 }
+                                    styleContent = {styles.item_content_2}
                                     id={item.item.userID}
                                     />
             else {
-                // setUserChat_state(item.item.userID);
                 return < ShowOneChat avatar= {user_2.avatar} 
                                      content= {item.item.content}
                                      stylechat = {styles.styleUser_2 }
+                                    styleContent = {styles.item_content_2}
                                      id={item.item.userID}
                                      />
             }       
@@ -131,15 +133,42 @@ export default ChatScreen = ({navigation,user_1_Data, user_2_Data}) => {
         console.log('gia tri chat: ',chats.data)
     }
 
+    const showInfoBeforeAdd = ({timestamp,value}) => {
+     console.log(   
+                    'userID_1: ',user_1.uid,
+                    'userID_2: ',user_2.uid,
+                    'userName_1: ',user_1.name,
+                   ' userName_2: ',user_2.name,
+                    'userAvatar_1:', user_1.avatar,
+                    'userAvatar_2: ',user_2.avatar,
+                   ' dateModified: ',timestamp,
+                        'content:',value,
+                        'timestamp: ',timestamp,
+                    )
+    }
+
     const AddChat = () => {
         console.log('kiem tra thong tin: ****\n \n \n \n ');
         console.log('user_1', user_1.uid)
         console.log('user_2', user_2.uid)
         console.log('docID', doc_chatID);
-
         let value = contentValue;
         setContenValue('')
         let timestamp = Date.now();
+        showLog()
+        console.log(   
+            'userID_1: ',user_1.uid,
+            'userID_2: ',user_2.uid,
+            'userName_1: ',user_1.name,
+           ' userName_2: ',user_2.name,
+            'userAvatar_1:', user_1.avatar,
+            'userAvatar_2: ',user_2.avatar,
+           ' dateModified: ',timestamp,
+            
+                'content:',value,
+                'timestamp: ',timestamp,
+            )
+
         firestore().collection('chats').doc(doc_chatID).get().then((res)=> {
             if(res.exists) {
                 let arr = chats.data;
@@ -150,12 +179,13 @@ export default ChatScreen = ({navigation,user_1_Data, user_2_Data}) => {
                 })
                 firestore().collection('chats').doc(doc_chatID).update({
                     data: arr,
+                    dateModified: timestamp,
                 }).catch(error=>console.log('loi khi cap nhat chat data: ',error))
-               
+               1
             }
             else {
                 console.log('chat data khong ton tai!');    
-                firestore().collection('chats').doc(doc_chatID).set({
+                firestore().collection('chats').doc(user_1.uid+user_2.uid).set({
                     chatID: user_1.uid+user_2.uid,
                     userID_1: user_1.uid,
                     userID_2: user_2.uid,
@@ -163,9 +193,10 @@ export default ChatScreen = ({navigation,user_1_Data, user_2_Data}) => {
                     userName_2: user_2.name,
                     userAvatar_1: user_1.avatar,
                     userAvatar_2: user_2.avatar,
+                    dateModified: timestamp,
                     data: [{
                         userID: user_1.uid,
-                        content:value,
+                        content:value.toString(),
                         timestamp: timestamp,
                     }],
                 })
@@ -176,140 +207,148 @@ export default ChatScreen = ({navigation,user_1_Data, user_2_Data}) => {
         })
         
     }
-    const sendChat = () => {
-       
-       AddChat();
- 
-    }
+    const sendChat = () => { AddChat();  }
 
     const GetFlatList = () => {
-        let arr = [{}];
-        if(chats.data != undefined) {
-            arr = chats.data;
-        }
-        console.log('---------------length chat data: ',arr)
         if(chats.data != undefined) return ( 
-            <View>
-                <FlatList style={styles.chat_container}
-                        // keyExtractor={(item,index)=>index.toString()}
-                        // initialNumToRender={chats_length-1}
-                        // onScrollToIndexFailed={()=>{}}
-                        // initialScrollIndex={18}
-
-                        // data={chats.data}
-                        // horizontal={false}
-                        // onLayout={() => {}}
-
-                        inverted
-                        data={[...chats.data].reverse()}
+               <View style={styles.chat_container}>
+                 <FlatList 
+                        // inverted
+                        // data={[...chats.data].reverse()}
+                        data={chats.data}
+                        onScrollToIndexFailed={()=> {}}
                         renderItem={({item})=>(
                             <ShowChat item={item} />
                         )}  
                 />
-        </View>
+               </View>
         )
     }
+    const onGoBack = () => {
+        if(oldScreen=='ChatHome') {
+            navigation.navigate('ChatHome')
+        } else {
+            navigation.navigate('NavigationOtherScreen',{name:'UserProfile', user: user_2_Data})
+        }
+    }
+    const onViewProfile = () => {
+        navigation.navigate('NavigationOtherScreen',{name:'UserProfile', user: user_2_Data})
+    }
+
     return (
-        <SafeAreaView style={styles.container}>
-            <View style={styles.chat_header}>
+        <View style={styles.container}>
+            <View  style={styles.chat_header}>
+                <TouchableHighlight onPress={onViewProfile} style={styles.touchHightlight} underlayColor={'#fff'}  onPress={onGoBack}>
+                    <AntDesign name="leftcircleo" color='#13f' size={30} />
+                </TouchableHighlight>
                 <GetImage style={styles.avatar} source={user_2.avatar} />
-                <Text style={styles.textName}>{user_2.name}</Text>
+                <Text onPress={onViewProfile} style={styles.textName}>{user_2.name}</Text>
             </View>
-            <GetFlatList / >
-             <View>
-                <TextInput autoFocus={true} style={styles.textInput} value={contentValue} onChangeText={(value) =>{setContenValue(value)}} />
-                <TouchableOpacity
-                    onPress={sendChat}
-                >
-                <Text style={styles.btnSend}>Gửi</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    onPress={showLog}
-                >
-                <Text style={{backgroundColor:'#f00', height:50}}>CheckLog</Text>
-                </TouchableOpacity>
-             </View>
-        </SafeAreaView>
+            <View style={{flexDirection:'column',justifyContent:'space-between'}} >
+        
+                       <View style={{height:'80%'}}>
+                         <GetFlatList / >
+                       </View>
+            
+                    <View>
+                        <TextInput placeholder="Nhắn tin.." multiline={true} autoFocus={true} style={styles.textInput} value={contentValue} onChangeText={(value) =>{setContenValue(value)}} />
+                        <TouchableHighlight onPress={sendChat} >
+                        <Text style={styles.btnSend}>Gửi</Text>
+                        </TouchableHighlight>
+                     </View>
+                </View>
+            </View>
 
     )
 }
 
 const styles = StyleSheet.create({
     container: {
-        flexDirection:'column'
+        flexDirection:'column',
 
+    },
+    touchHightlight: {
+        width:60,
+        paddingLeft:20,
+      
     },
     chat_header: {
         flexDirection: 'row',
+        alignItems:'center',
         width: '100%',
-        height: 50,
-        backgroundColor: '#ffa'
+        height: 60,
+        borderBottomColor:'#bbb',
+        borderBottomWidth:1,
+        marginBottom:10,
     },
     avatar: {
         width: 42,
         height: 42,
         borderRadius: 25,
-        paddingRight: 10,
         backgroundColor: '#00f',
         marginLeft:20,
     },
     textName: {
+        marginLeft:20,
+        fontSize:18,
+        color:'#0af'
 
     },
     chat_container: {
-        // width:'85%',
-        height:'50%',
         paddingLeft:12,
         paddingRight:12,
     },
     textInput: {
-        width:'80%',
-        backgroundColor: '#eee'
+        width:'100%',
+        borderTopColor:'#ccc',
+        borderWidth:1,
+        paddingLeft:10,
+        fontSize:16,
     },
     btnSend: {
         backgroundColor: '#00f',
+        color:'#fff',
+        height:50,
+        textAlign:'center',
+        fontSize:20,
+        paddingTop:10,
     },
     styleUser_1: {
         flexDirection: 'row',
         justifyContent: 'flex-end',
-        backgroundColor: '#cfa',
+        marginTop:10,
         
     },
     styleUser_2: {
         flexDirection: 'row',
         justifyContent: 'flex-start',
-        backgroundColor: '#cfa',
-       
-
+        marginTop:10,
     },
-    content: {
-        color: '#f00',
+    item_container: {
+        flexDirection:'row',
+        alignItems:'center',
+    },
+    item_avatar: {
+        width:42, 
+        height:42, 
+        marginRight:30,
+    },
+    item_content_1: {
         fontSize: 16,
-        fontWeight:'400',
-       
+        marginTop:-20,
+        maxWidth:'100%',
+        backgroundColor:'#06f',
+        color:'#fff',
+        padding:10,
+        borderRadius:10,
+    },
+    item_content_2: {
+        fontSize: 16,
+        marginTop:-20,
+        maxWidth:'100%',
+        backgroundColor:'#eea',
+        padding:10,
+        borderRadius:10,
+
     }
-
-
 })
-
-/*
-**** CHAT DATA
-
-document: userID_1
-
-chatID: userID_1
-userID_1: user.uid
-userID_2: user.uid
-userName_1: user.name
-userName_2: user.name
-userAvatar_1: user.avatar
-userAvatar_2: user.avatar
-data[
-    {
-        userID: user.uid,
-        content:  "",
-        time: date.now()
-    }
-],
-
-*/

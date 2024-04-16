@@ -6,20 +6,22 @@ import {
   TextInput,
   TouchableOpacity,
   Alert,
+  ToastAndroid,
 } from 'react-native';
 import React, {useState} from 'react';
-import VectorIcon from '../utils/VectorIcon';
-import {Colors} from '../utils/Colors';
-import Logo from '../assets/images/logo.png';
-import textLogo from '../assets/images/text-logo.png';
+import VectorIcon from '../../utils/VectorIcon';
+import {Colors} from '../../utils/Colors';
+import Logo from '../../assets/images/logo.png';
+import textLogo from '../../assets/images/text-logo.png';
 import auth from '@react-native-firebase/auth';
 
-import Profile from './profile/OwnerProfile';
+import Profile from '../profile/OwnerProfile';
 
 
 const LoginScreen = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
   const onCreateAccount = () => {
     navigation.navigate('RegisterScreen');
@@ -27,49 +29,68 @@ const LoginScreen = ({navigation}) => {
 
   const onLogin = () => {
     console.log(' into Login button:');
+    if(email == '') {
+      setError('email không được rỗng');
+      return;
+    }
+    if(password == '') {
+      setError('mật khẩu không được rỗng');
+      return;
+    }
+   
     if (email && password) {
       console.log('into exist email & pass :',email," ",password);
       auth()
         .signInWithEmailAndPassword(email, password)
         .then(response => {
-          Alert.alert('Thong bao',"Đang nhập thành công")
+          ToastAndroid.showWithGravity('Đăng nhập thành công!',ToastAndroid.LONG,ToastAndroid.BOTTOM)
 
         })
         .catch(error => {
-          if (error.code === 'auth/wrong-password') {
-            Alert.alert('Thong bao','Your password is wrong!');
-          } else {
+          if (error.code === 'auth/wrong-password')
+              setError('mật khẩu không chính xác')
+          else if (error.code === 'auth/invalid-email')
+              setError('định dạng email không chính xác: abc@gmail.com')
+          else if (error.code === 'auth/invalid-credential')
+              setError('thông tin đăng nhập không chính xác')
+          else 
             Alert.alert('Thong bao',`${error}`);
-          }
+          
         });
     }
     console.log('hoan thanh')
     
   };
 
+
   return (
     <View style={styles.container}>
 
       <View style={styles.subContainer}>
         <Image source={Logo} style={styles.logoStyle} />
+        <Text style={{height:20,color:'#f00',fontStyle:'italic'}}>{error}</Text>
         <TextInput
-          placeholder="Mobile number or email"
+          placeholder="Email đăng nhập..."
           value={email}
           onChangeText={value => setEmail(value)}
           style={styles.inputBox}
         />
         <TextInput
-          placeholder="Password"
+          placeholder="Mật khẩu..."
           value={password}
+          secureTextEntry={true}
           onChangeText={value => setPassword(value)}
           style={styles.inputBox}
         />
         <TouchableOpacity onPress={onLogin} style={styles.loginButton}>
-          <Text style={styles.login}>Log in</Text>
+          <Text style={styles.login}>Đăng nhập</Text>
         </TouchableOpacity>
-        <Text style={styles.forgotPass}>Forgot Password?</Text>
+        <TouchableOpacity  onPress={()=> {navigation.navigate('ResetPasswordScreen')}} >
+        <Text style={styles.forgotPass}>Quên mật khẩu?</Text>
+
+        </TouchableOpacity>
         <TouchableOpacity style={styles.newAccount} onPress={onCreateAccount}>
-          <Text style={styles.newAccountText}>Create new account</Text>
+          <Text style={styles.newAccountText}>Đăng ký tài khoản</Text>
         </TouchableOpacity>
         <Image source={textLogo} style={styles.textLogoStyle} />
       </View>

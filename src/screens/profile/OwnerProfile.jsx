@@ -102,7 +102,7 @@ const GetProfile = () => {
               horizontal={false}
               renderItem={({item}) => (
                   <View style={{width:"100%",flex:1}} key={item.ownerID}>
-                    <PostHeader data={item} user={user} />
+                    <PostHeader data={item} navigation={navigation} user={user} />
                     <GetImage source={item.image} style={styles.postImg} />
                     <PostFooter data={item} />
                 </View>

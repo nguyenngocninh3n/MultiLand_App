@@ -8,10 +8,10 @@ import {
   Alert,
 } from 'react-native';
 import React, {useState} from 'react';
-import VectorIcon from '../utils/VectorIcon';
-import {Colors} from '../utils/Colors';
-import Logo from '../assets/images/logo.png';
-import textLogo from '../assets/images/text-logo.png';
+import {Colors} from '../../utils/Colors';
+import Logo from '../../assets/images/logo.png'
+
+import textLogo from '../../assets/images/logo.png'
 import auth from '@react-native-firebase/auth';
 import AntDesign from 'react-native-vector-icons/dist/AntDesign'
 
@@ -22,7 +22,7 @@ const RegisterScreen = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-
+  const [error,setError] = useState('');
   const onCreateAccount = () => {
     navigation.navigate('LoginScreen');
   };
@@ -33,8 +33,22 @@ const RegisterScreen = ({navigation}) => {
     console.log("===> ",password)
     console.log("===> ",confirmPassword)
 
+    if(fullname.trim()=='') {
+      setError('Họ và tên không được để trống');
+      return;
+    }
+    if(email.trim()=='') {
+      setError('Email không được để trống');
+      return;
+    } if(password=='') {
+      setError('Password không được để trống');
+      return;
+    } if(confirmPassword=='') {
+      setError('Xác nhận mật khẩu không được để trống không được để trống');
+      return;
+    }
     if (password !== confirmPassword) {
-      Alert.alert('Thong bao',"Password don't match.");
+      setError('mật khẩu và phần xác nhận không khớp')
       return;
     }
     if (email && password) { 
@@ -56,7 +70,7 @@ const RegisterScreen = ({navigation}) => {
                     follower: 0,
                     })
                 .then(() => {
-                    console.log('User added!');
+                    
                 });
             })
 
@@ -65,9 +79,7 @@ const RegisterScreen = ({navigation}) => {
             });
 
 
-    } else {
-      Alert.alert('Thong bao','Please fill in details!');
-    }
+    } 
   };
 
   return (
@@ -81,35 +93,41 @@ const RegisterScreen = ({navigation}) => {
       />
       <View style={styles.subContainer}>
         <Image source={Logo} style={styles.logoStyle} />
+        <Text style={{color:'#f00',fontStyle:'italic'}}>{error}</Text>
         <TextInput
-          placeholder="Full Name"
+          placeholder="Họ và tên..."
           value={fullname}
           onChangeText={value => setFullname(value)}
           style={styles.inputBox}
         />
         <TextInput
-          placeholder="Mobile number or email"
+          placeholder="Email..."
           value={email}
           onChangeText={value => setEmail(value)}
           style={styles.inputBox}
         />
         <TextInput
-          placeholder="Password"
+          placeholder="Mật khẩu..."
           value={confirmPassword}
           onChangeText={value => setConfirmPassword(value)}
+          secureTextEntry={true}
           style={styles.inputBox}
         />
         <TextInput
-          placeholder="Confirm Password"
+          placeholder="Xác nhận mật khẩu..."
           value={password}
           onChangeText={value => setPassword(value)}
+          secureTextEntry={true}
           style={styles.inputBox}
         />
-        <TouchableOpacity onPress={onRegister} style={styles.loginButton}>
-          <Text style={styles.login}>Create Account</Text>
+        <TouchableOpacity onPress={()=>{
+         
+          onRegister();
+        }} style={styles.loginButton}>
+          <Text style={styles.login}>Tạo tài khoản</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.newAccount} onPress={onCreateAccount}>
-          <Text style={styles.newAccountText}>Already have an account?</Text>
+          <Text style={styles.newAccountText}>Đã có tài khoản?</Text>
         </TouchableOpacity>
         <Image source={textLogo} style={styles.textLogoStyle} />
       </View>

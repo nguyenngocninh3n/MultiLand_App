@@ -156,10 +156,10 @@ const PostFooter = ({data}) => {
       <View style={styles.userActionSec}>
         <View  style={styles.row}>
           <TouchableOpacity onPress={onReaction}
-            style={{backgroundColor:reaction_state?Colors.primaryColor:Colors.white}} 
+            
             >
             {/* <EvilIcons name='heart' size={20} /> */}
-          <Text  style={styles.reactionCount}>Like</Text>
+          <Text   style={reaction_state?{color:'#f00', fontSize:18, fontWeight:'bold'}:{color:'#000'}}>{reaction_state?'Đã like':'Like'}</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.row}>

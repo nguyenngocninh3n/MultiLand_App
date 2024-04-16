@@ -81,7 +81,7 @@ const toProfile =() => {
   if(auth().currentUser.uid != user.uid)
     navigation.navigate('NavigationOtherScreen',{name:'UserProfile', user:user})
     else
-    navigation.jumpTo('OwnerProfile');
+    navigation.navigate('OwnerProfile');
 }
 
   return (

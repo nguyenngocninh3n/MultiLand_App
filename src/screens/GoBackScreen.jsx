@@ -1,11 +1,20 @@
 import { StyleSheet, Text, TouchableHighlight, TouchableHighlightBase, View } from "react-native"
 import AntDesign  from 'react-native-vector-icons/dist/AntDesign';
+import UserProfile from "./tem";
 
 
-export default GoBackScreen = ({navigation, label}) => {
+export default GoBackScreen = ({navigation, label, user, oldScreen}) => {
 
     const onGoBack = () => {
-        navigation.goBack();
+        if(oldScreen == 'UserProfile' ) {
+            navigation.navigate('NavigationOtherScreen',{name:'UserProfile', user: user})
+        }
+        else if(oldScreen == 'OwnerProfile') {
+            navigation.navigate('OwnerProfile')
+        }
+        else {
+            navigation.goBack();
+        }
     }
 
     return(
@@ -21,16 +30,16 @@ export default GoBackScreen = ({navigation, label}) => {
 const styles = StyleSheet.create({
     container:{
        flexDirection: 'row',
-       maxWidth:'100#',
+       maxWidth:'100%',
         alignItems:'center',
         backgroundColor:'#eee',
         marginBottom:10,
     },
 
     touchHightligh: {
-        width:80,
+        width:60,
         paddingLeft:20,
-        padding:10
+      
     },
     label: {
         fontSize:20,

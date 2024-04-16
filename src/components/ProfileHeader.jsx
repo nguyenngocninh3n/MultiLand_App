@@ -10,7 +10,7 @@ export default ProfileHeader = ({navigation, PostData, userData}) => {
   console.log('gia tri use data dau tien: ',userData)
  
   const [user, setUser] = useState(userData)
-
+  const [oldScreen, setOldScreen] = useState('')
 console.log('gia tri use dau tien: ',user)
       useEffect(()=>{
         firestore().collection("users").doc(userData.uid).onSnapshot((res) => {
@@ -19,6 +19,12 @@ console.log('gia tri use dau tien: ',user)
             {
               console.log('comments exists')
                 setUser(res.data());
+                if(userData.uid == auth().currentUser.uid) {
+                  setOldScreen('OwnerProfile')
+                }
+              else {
+                setOldScreen('UserProfile')
+              }
             }
         })
        
@@ -32,8 +38,14 @@ console.log('gia tri use dau tien: ',user)
 
     const GetBar =(userItem) => {
       // userItem = userData;
-          if(userData.uid == auth().currentUser.uid) return <OwnerBar />
-        else return <UserBar navigation={navigation} userData={userData} />
+   
+
+        if(userData.uid == auth().currentUser.uid) {
+          return <OwnerBar />
+        }
+      else {
+        return <UserBar navigation={navigation} userData={userData} />
+      }
     }
 
     return (
@@ -53,7 +65,7 @@ console.log('gia tri use dau tien: ',user)
             <View style={styles.userInfoItem}>
                 <TouchableOpacity
                 onPress={()=>{ 
-                navigation.navigate('NavigationOtherScreen', {name:'FollowerScreen', user:userData})}
+                navigation.navigate('NavigationOtherScreen', {name:'FollowerScreen', oldScreen:oldScreen, user:userData})}
                 }>
                     <Text style={styles.userInfoTitle}>{user.follower}</Text>
                     <Text style={styles.userInfoSubTitle}>Followers</Text>
@@ -63,7 +75,7 @@ console.log('gia tri use dau tien: ',user)
                 <TouchableOpacity
                 onPress={()=> 
                 {
-                    navigation.navigate('NavigationOtherScreen',{name:'FollowingScreen',user:userData})}
+                    navigation.navigate('NavigationOtherScreen',{name:'FollowingScreen',oldScreen:oldScreen, user:userData})}
                 }
                 >
                     <Text style={styles.userInfoTitle}>{user.following}</Text>

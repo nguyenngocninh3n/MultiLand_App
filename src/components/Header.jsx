@@ -6,10 +6,22 @@ import {Colors} from '../utils/Colors';
 import AntDesign  from 'react-native-vector-icons/dist/AntDesign';
 import { TextInput } from 'react-native-gesture-handler';
 import { Text } from 'react-native-paper';
+import  firestore from '@react-native-firebase/firestore'
 
 
-
-const Header = () => {
+const Header = ({navigation}) => {
+// var user = {}
+//   useEffect(()=>{
+//     firestore().collection('users').doc(auth().currentUser.uid).get()
+//                 .then(documentSnapshot => {
+//                     if(documentSnapshot.exists)
+//                     {
+//                         user = documentSnapshot.data()
+//                     }
+//                 })
+//                 .catch(error => {console.log(error)})
+    
+// },[])
 
   const [inputSearch_state, setInputSearch_state] = useState(styles.hideInputSearch)
   const [search_state, setSearch_state] = useState(styles.showInputSearch)
@@ -56,12 +68,16 @@ const Header = () => {
         </View>
        
         <View style={styles.searchBg}>
-            <AntDesign
-            name="message1"
-            type="AntDesign"
-            size={24}
-            color={Colors.grey}
-          />
+           <TouchableOpacity
+            onPress={()=> navigation.navigate('ChatHome')}
+            >
+                <AntDesign
+                  name="message1"
+                  type="AntDesign"
+                  size={24}
+                  color={Colors.grey}
+                />
+           </TouchableOpacity>
         </View>
         </View>
       </View>
@@ -71,8 +87,8 @@ const Header = () => {
 
 const styles = StyleSheet.create({
   fbLogoStyle: {
-    height: 25,
-    width: 25,
+    height: 70,
+    width: 70,
   },
 
   hideInputSearch: {
@@ -101,11 +117,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginLeft: 10,
   },
+  
   container: {
     backgroundColor: Colors.white,
-    padding: 16,
+    paddingLeft: 16,
+    paddingRight:16,
     flexDirection: 'row',
     justifyContent: 'space-between',
+    borderBottomColor:'#bbb',
+    borderBottomWidth:1,
   },
   headerIcons: {
     flexDirection: 'row',
