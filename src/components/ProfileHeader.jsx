@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image } from "react-native"
+import { StyleSheet, Text, TouchableOpacity, View, Image, TouchableHighlight } from "react-native"
 import OwnerBar from "./OwnerBar";
 import auth from '@react-native-firebase/auth'
 import UserBar from "./UserBar";
@@ -50,10 +50,12 @@ console.log('gia tri use dau tien: ',user)
 
     return (
         <View >
+            <TouchableHighlight>
             <View style={styles.container}>
                 <GetImage source={userData.avatar} style={styles.userImg} />
                 <Text style={styles.userName}>{userData.name}</Text>
             </View>
+            </TouchableHighlight>
            <View style={{marginTop:-10}}>
                 <GetBar userItem={userData} />
            </View>

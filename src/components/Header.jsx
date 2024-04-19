@@ -47,7 +47,7 @@ const Header = ({navigation}) => {
             <TextInput multiline={true} 
                       placeholder='Nhập nội dung vào đây' />
             <TouchableOpacity onPress={()=>{
-              setSearch_onlick(!search_onclick)
+              navigation.navigate('Search')
           }}>
               <Text>Tìm kiếm</Text>
             </TouchableOpacity>
@@ -56,7 +56,7 @@ const Header = ({navigation}) => {
         <View  style={styles.showInputSearch}>
         <View style={styles.searchBg}>
           <TouchableOpacity onPress={()=>{
-              setSearch_onlick(!search_onclick)
+             navigation.navigate('Search')
           }}>
             <AntDesign
               name="search1"

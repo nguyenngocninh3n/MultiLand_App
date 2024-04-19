@@ -44,7 +44,7 @@ const Post = ({navigation}) => {
                   <View key={item.ownerID}>
                     <PostHeader data={item} navigation={navigation} />
                     <GetImage source={item.image}/>
-                    <PostFooter data={item} />
+                    <PostFooter data={item} navigation={navigation} />
                     
                 </View>              
               )}

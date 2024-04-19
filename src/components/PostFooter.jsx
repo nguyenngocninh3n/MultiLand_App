@@ -12,7 +12,7 @@ import  Modal from 'react-native-modal';
 import Comments from '../screens/comment/Comments';
 
 import EvilIcons from 'react-native-vector-icons/EvilIcons'
-const PostFooter = ({data}) => {
+const PostFooter = ({navigation,data}) => {
 
   const [reaction,setReaction] = useState({})
   const [reaction_state, setReaction_state] = useState(false)
@@ -131,7 +131,7 @@ const PostFooter = ({data}) => {
                onBackdropPress={()=>setComment_state(false)}
                style={{  marginTop:100, marginBottom:50,  borderRadius:20,backgroundColor:'#fff', width:'90%', }}
         >
-          <Comments dataPost = {data} />
+          <Comments navigation={navigation} dataPost = {data} />
         </Modal>
       
     )

@@ -45,14 +45,16 @@ export default NewPost =({navigation}) => {
           );
           if (granted === PermissionsAndroid.RESULTS.GRANTED) {
             const result = await launchImageLibrary({mediaType:'photo'})
-            setImage_state(true)
-            setImage(result.assets[0].uri);
+            if( result.assets[0].uri != undefined) {
+              setImage_state(true)
+              setImage(result.assets[0].uri);
+            }
             console.log('gia tri cua img la: ',image)
           } else {
             Alert.alert('Chưa cấp quyền')
           }
         } catch (err) {
-          console.warn(err);
+          console.log(err);
         }
       };
 

@@ -10,13 +10,12 @@ export default UserBar = ({navigation,userData }) =>{
     const [followingData, setFollowingData] = useState([])
     const [user, setUser] = useState(userData)
    
-    const startFunction = async () => {
-      const value1 = await firestore().collection('users').doc(auth().currentUser.uid).get()
-      .then(documentSnapshot => {
+    const startFunction =  () => {
+      const value1 = firestore().collection('users').doc(auth().currentUser.uid).onSnapshot(documentSnapshot => {
         if(documentSnapshot.exists) setFollow_user (documentSnapshot.data());
      })
 
-     firestore().collection("users").doc(userData.uid).get().then((res) => {
+     firestore().collection("users").doc(userData.uid).onSnapshot((res) => {
       const comment_arr = []
       if(res != null) 
         console.log('comments exists')
@@ -70,6 +69,7 @@ export default UserBar = ({navigation,userData }) =>{
     .update({follower: user.follower+value}).then(res => {
   
     })
+    startFunction()
   }
   
   const createFollower = ( follow_user, user) => {

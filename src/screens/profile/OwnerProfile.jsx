@@ -24,7 +24,7 @@ import ProfileHeader from '../../components/ProfileHeader';
 import ChangePasswordScreen from '../Authentication/ChangePasswordScreen';
 import 'react-native-gesture-handler'
 import { createDrawerNavigator } from '@react-navigation/drawer';
-
+import ChangeAvatar from './ChangeAvatar'
 const Drawer = createDrawerNavigator();
 
 
@@ -131,6 +131,7 @@ const OwnerProfile = ({navigation}) => {
                         }}>
           <Drawer.Screen options={{title:'Trang cá nhân'}}  name="GetScreen" component={GetScreen} />
           <Drawer.Screen options={{title:'Đổi mật khẩu'}} name="ChangePasswordScreen" component={ChangePasswordScreen} />
+          <Drawer.Screen options={{title:'Đổi avatar'}} name="ChangeAvatar" component={ChangeAvatar} />
           <Drawer.Screen options={{title:'Đăng xuất'}} name="Logout" component={Logout} />
       </Drawer.Navigator>
     )};

@@ -13,7 +13,7 @@ export default ChatScreen = ({navigation, oldScreen, user_1_Data, user_2_Data}) 
     const [chats_length, setChats_length] = useState(1);
     const [doc_chatID, setDoc_chatID] = useState(null);
    
-  
+    const chatRef = useRef(null)
     var userChat_state = null;
     const [contentValue, setContenValue] = useState('')
 
@@ -41,7 +41,6 @@ export default ChatScreen = ({navigation, oldScreen, user_1_Data, user_2_Data}) 
                     }
             })}
         })
-       
     },[])
     
     useEffect(() => {
@@ -49,9 +48,17 @@ export default ChatScreen = ({navigation, oldScreen, user_1_Data, user_2_Data}) 
                 let arr =chats.data;
                 setChats_length(arr.length)
         }
-    }
-        
-    ,[chats])
+    },[chats])
+
+    useEffect(()=>{
+
+            console.log('--------------vào luồng này');
+            setTimeout(()=>{chatRef.current.scrollToEnd({animated:false})},1000);
+            
+        }
+    ,[chats_length])
+    
+
 
     const formatDate = (timestamp) => {
         const options = {
@@ -207,23 +214,47 @@ export default ChatScreen = ({navigation, oldScreen, user_1_Data, user_2_Data}) 
         })
         
     }
+
+    
     const sendChat = () => { AddChat();  }
 
     const GetFlatList = () => {
         if(chats.data != undefined) return ( 
-               <View style={styles.chat_container}>
+               <SafeAreaView style={styles.chat_container}>
                  <FlatList 
                         // inverted
                         // data={[...chats.data].reverse()}
+                        // ref={chatRef} 
+                        // keyExtractor={(item,index)=>index.toString()}
+                        
+                       
                         data={chats.data}
-                        onScrollToIndexFailed={()=> {}}
+                        // initialScrollIndex={chats.length-1}
+                        ref={chatRef}
+                        // onContentSizeChange={}
+                        // onLayout={() => chatRef.current.scrollToEnd() }
+                        
+                       // onScrollToIndexFailed={()=> {}}
                         renderItem={({item})=>(
                             <ShowChat item={item} />
                         )}  
                 />
-               </View>
+               </SafeAreaView>
         )
     }
+
+      
+   const [textInput_style, setTextInput_style] = useState(styles.textInput_styleOut)
+   const textInputInt = () =>{
+    setTextInput_style(styles.textInput_styleIn)
+   }
+
+   const textInputOut = () => {
+    setTextInput_style(styles.textInput_styleOut)
+   }
+   useEffect(()=>{textInputOut},[])
+
+
     const onGoBack = () => {
         if(oldScreen=='ChatHome') {
             navigation.navigate('ChatHome')
@@ -242,16 +273,16 @@ export default ChatScreen = ({navigation, oldScreen, user_1_Data, user_2_Data}) 
                     <AntDesign name="leftcircleo" color='#13f' size={30} />
                 </TouchableHighlight>
                 <GetImage style={styles.avatar} source={user_2.avatar} />
-                <Text onPress={onViewProfile} style={styles.textName}>{user_2.name}</Text>
+                <Text  onPress={onViewProfile} style={styles.textName}>{user_2.name}</Text>
             </View>
             <View style={{flexDirection:'column',justifyContent:'space-between'}} >
         
-                       <View style={{height:'80%'}}>
+                       <SafeAreaView onPressIn={textInputOut} style={{...textInput_style,height:'80%'}}>
                          <GetFlatList / >
-                       </View>
+                       </SafeAreaView>
             
                     <View>
-                        <TextInput placeholder="Nhắn tin.." multiline={true} autoFocus={true} style={styles.textInput} value={contentValue} onChangeText={(value) =>{setContenValue(value)}} />
+                        <TextInput style={styles.textInput} onBlur={textInputOut} onFocus={textInputInt}  placeholder="Nhắn tin.." multiline={true}   value={contentValue} onChangeText={(value) =>{setContenValue(value)}} />
                         <TouchableHighlight onPress={sendChat} >
                         <Text style={styles.btnSend}>Gửi</Text>
                         </TouchableHighlight>
@@ -349,6 +380,16 @@ const styles = StyleSheet.create({
         backgroundColor:'#eea',
         padding:10,
         borderRadius:10,
+    },
+    textInput_styleIn: {
+    marginBottom:-60,
+    paddingLeft:10,
+  },
 
-    }
+  textInput_styleOut: {
+    borderWidth:1,
+    marginBottom:0,
+    borderTopColor:'#dda',
+    paddingLeft:10,
+  }
 })

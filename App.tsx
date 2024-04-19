@@ -15,6 +15,7 @@ import ChatScreen from './src/screens/chat/ChatScreen';
 import ChatHome from './src/screens/chat/ChatHome';
 import ResetPasswordScreen from './src/screens/Authentication/ResetPasswordScreen'
 import TempScreen from './src/screens/Authentication/TempScreen';
+import Search from './src/screens/Search';
 const Stack = createStackNavigator();
 
 const App = () => {
@@ -43,6 +44,7 @@ const App = () => {
              <Stack.Screen name='ChatScreen' component={ChatScreen} />
              <Stack.Screen name='ChatHome' component={ChatHome} />
              <Stack.Screen name='NavigationOtherScreen' component={NavigationOtherScreen} />
+             <Stack.Screen name='Search' component={Search} />
          </>
           :
           <>
