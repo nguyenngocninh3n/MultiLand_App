@@ -6,18 +6,15 @@ import { useEffect, useState } from "react";
 import firestore from '@react-native-firebase/firestore'
 export default ProfileHeader = ({navigation, PostData, userData}) => {
 
-  console.log('bat dau ham profile')
-  console.log('gia tri use data dau tien: ',userData)
+ 
  
   const [user, setUser] = useState(userData)
   const [oldScreen, setOldScreen] = useState('')
-console.log('gia tri use dau tien: ',user)
       useEffect(()=>{
         firestore().collection("users").doc(userData.uid).onSnapshot((res) => {
          
           if(res != null) 
             {
-              console.log('comments exists')
                 setUser(res.data());
                 if(userData.uid == auth().currentUser.uid) {
                   setOldScreen('OwnerProfile')
@@ -37,9 +34,6 @@ console.log('gia tri use dau tien: ',user)
     }
 
     const GetBar =(userItem) => {
-      // userItem = userData;
-   
-
         if(userData.uid == auth().currentUser.uid) {
           return <OwnerBar />
         }

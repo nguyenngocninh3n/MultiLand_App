@@ -21,9 +21,9 @@ const PostHeader = ({data, navigation}) => {
   .doc(data.ownerID)
   .get()
   .then(documentSnapshot => {
-    console.log('User exists: ', documentSnapshot.exists);
+    // console.log('User exists: ', documentSnapshot.exists);
     if (documentSnapshot.exists) {
-      console.log('PostHeader - User exist: ');
+      // console.log('PostHeader - User exist: ');
       setUser(documentSnapshot.data())
     }
   });

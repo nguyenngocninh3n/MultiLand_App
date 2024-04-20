@@ -155,10 +155,10 @@ export default ChatScreen = ({navigation, oldScreen, user_1_Data, user_2_Data}) 
     }
 
     const AddChat = () => {
-        console.log('kiem tra thong tin: ****\n \n \n \n ');
-        console.log('user_1', user_1.uid)
-        console.log('user_2', user_2.uid)
-        console.log('docID', doc_chatID);
+        // console.log('kiem tra thong tin: ****\n \n \n \n ');
+        // console.log('user_1', user_1.uid)
+        // console.log('user_2', user_2.uid)
+        // console.log('docID', doc_chatID);
         let value = contentValue;
         setContenValue('')
         let timestamp = Date.now();

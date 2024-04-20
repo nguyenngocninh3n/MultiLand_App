@@ -4,21 +4,24 @@ import firestore from '@react-native-firebase/firestore'
 import { useEffect, useState } from "react"
 import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import { SafeAreaView } from 'react-native-safe-area-context'
-
+import auth from '@react-native-firebase/auth'
 
 export default FollowingScreen = ({navigation, user}) => {
 
     const [followings, setFollowings] = useState([])
     useEffect(()=> {
-        firestore().collection('followings').doc(user.uid).get().then(documentSnapshot => {
-            if(documentSnapshot.exists) {
-                console.log('following có tồn tại: ',documentSnapshot.data())
-                setFollowings(documentSnapshot.data().data)
-            }
-            else {
-                console.log('following khong ton tai')
-            }
-        })
+    firestore().collection('followings').doc(auth().currentUser.uid).get().then(documentSnapshot => {
+        if(documentSnapshot.exists) {
+          let arr = [];
+          let temp = documentSnapshot.data().data;
+          temp.forEach(value => {
+            value.ref.get().then(res=> {
+              arr.push(res.data())
+            })
+          })
+          setFollowings(arr)
+        }
+    }).catch(err => console.log('error: ',err))
     },[] )
 
     return (

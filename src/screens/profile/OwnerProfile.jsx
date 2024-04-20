@@ -39,7 +39,6 @@ const OwnerProfile = ({navigation}) => {
         temp_user = documentSnapshot.data()
       }
     });
-  console.log('------------------kiem tra gia tri user trong firestore: ', temp_user)
     
     return temp_user;
   }
@@ -48,7 +47,6 @@ const OwnerProfile = ({navigation}) => {
   console.log('gia tri temp: ',temp)
   const [user,setUser] = useState({});
   
-  console.log('------------------kiem tra gia tri user: ', user)
   useEffect(()=> {
     firestore()
   .collection('users')
@@ -85,11 +83,7 @@ const OwnerProfile = ({navigation}) => {
 }
 
   const GetProfile = () => {
-
-    console.log('*****************************Thong tin user: ', user)
     return   <ProfileHeader navigation={navigation} userData={user} PostData={PostData} />
-    
-
   }
 
   const GetScreen = () => {

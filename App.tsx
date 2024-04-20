@@ -30,7 +30,6 @@ const App = () => {
     return subscriber;
   }, []);
 
-  useEffect(()=>{console.log('in ra thong tin user khi login: ',user)},[user])
 
   return (
     <NavigationContainer>

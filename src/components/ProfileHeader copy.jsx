@@ -13,7 +13,7 @@ export default ProfileHeader = ({navigation, PostData, userData}) => {
         firestore().collection("users").doc(userData.uid).onSnapshot((res) => {
           const comment_arr = []
           if(res != null) 
-            console.log('comments exists')
+           
                 setUser(res.data());
         })
        }

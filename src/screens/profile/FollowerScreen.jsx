@@ -8,18 +8,21 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 
 export default FollowerScreen = ({navigation, user}) => {
 
-    console.log('bat dau follower screen, in ra thong tin user: ',user)
     const [followers, setFollowers] = useState([])
     useEffect(()=> {
-        firestore().collection('followers').doc(user.uid).get().then(documentSnapshot => {
-            if(documentSnapshot.exists) {
-                console.log('follower có tồn tại: ',documentSnapshot.data())
-                setFollowers(documentSnapshot.data().data)
-            }
-            else {
-                console.log('follower khong ton tai')
-            }
-        })
+     firestore().collection('followers').doc(user.uid).get().then(documentSnapshot => {
+        if(documentSnapshot.exists) {
+          let arr = [];
+          let temp = documentSnapshot.data().data;
+          temp.forEach(value => {
+            value.ref.get().then(res=> {
+              
+              arr.push(res.data())
+            })
+          })
+          setFollowers(arr)
+        }
+    }).catch(err => console.log('error: ',err))
     },[] )
 
     return (

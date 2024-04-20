@@ -27,7 +27,7 @@ export default ChatHome = ({navigation}) => {
             console.log('ket qua res: ',res)
             let arr = []
             if(res != null) {
-                console.log('comments exists')
+                
                 res.forEach(documentSnapshot => {
                     console.log("gia tri cac comment: ",documentSnapshot.data())
                     let item = documentSnapshot.data();

@@ -69,11 +69,11 @@ const PostFooter = ({navigation,data}) => {
           if(documentSnapshot.exists) {
             setReaction(documentSnapshot.data() )
             setReaction_state(documentSnapshot.data().state)
-            console.log("GetDataReaction: Hoan thanh get data")
+            // console.log("GetDataReaction: Hoan thanh get data")
           }
           else {
             setReaction(undefined)
-            console.log("GetDataReaction:datareaction khong ton tai")
+            // console.log("GetDataReaction:datareaction khong ton tai")
           }
         })
         .catch(error => {console.log('loi khi get data reaction: ',error)})  

@@ -1,100 +1,114 @@
-import {View, Text,Image,TouchableOpacity,ScrollView, Alert, StyleSheet} from 'react-native';
-import React from 'react';
-import {Colors} from '../utils/Colors';
-import {FriendData} from '../data/FriendData';
-
-// const FriendScreen = () => {
-//   return (
-//     <View style={styles.container}>
-//       <Text style={styles.title}>Danh sách bạn bè</Text>
-//     </View>
-//   );
-// };
-
-const addFriend = () => {
-
-     Alert.alert('thong bao','Đã gửi lời mời kết bạn' );
-}
+import { useEffect, useState } from "react"
+import { FlatList, StyleSheet, Text, View,Image } from "react-native"
+import firestore from '@react-native-firebase/firestore'
+import auth from '@react-native-firebase/auth'
+import { SafeAreaView } from "react-native-safe-area-context"
+import { TouchableHighlight } from "react-native-gesture-handler"
 
 
-const FriendScreen = () => {
-const value = 'Kết bạn';
+export default FriendScreen = ({navigation}) => {
+  const [followings, setFollowings] = useState([])
+  const [suggests, setSuggests] = useState([])
+  const [users, setUsers] = useState([])
 
-  return (
-    <ScrollView style={styles.postContainer}>
-      {FriendData.map(item => (
-        <View key={item.id} style={styles.container}>
-         <View style={styles.row}>
-          <Image source={item. profileImg}  style={styles.profileImg}/>
-          <Text style={styles.textName}>{item.name}</Text>
-         </View >
-           <TouchableOpacity onPress={addFriend} style={styles.loginButton}>
-{                         <Text style={styles.login}>Kết bạn</Text> }
+  const getData = async () => {
+    let arr_id = [];
+    // get followings data
+    await firestore().collection('followings').doc(auth().currentUser.uid).get().then(documentSnapshot => {
+                  if(documentSnapshot.exists) {
+                    let arr = [];
+                    let temp = documentSnapshot.data().data;
+                    temp.forEach(value => {
+                      value.ref.get().then(res=> { 
+                        arr.push(res.data());
+                        arr_id.push(res.data().uid);
+                    })
+                  })
+                    setFollowings(arr)
+                  }
+              })
+      //get User data
+     await firestore().collection('users').get().then(documentSnapshot=> {
+          if(documentSnapshot != null) {
+            let arr_temp = [];
+              documentSnapshot.forEach(item => {
+                  if(arr_id.indexOf(item.data().uid)  == -1 ) {
+                    arr_temp.push(item.data());
+                  }
+              })
+              setSuggests(arr_temp)
+          }
+      });
+    
+ }
 
-                          </TouchableOpacity>
-        </View>
+  useEffect( ()=> {
+    getData();
+  },[])
 
-
-
-      ))}
-    </ScrollView>
-  );
-};
-
-
-
-const styles = StyleSheet.create({
-
-    container: {
-        backgroundColor: Colors.white,
-        padding: 16,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        borderBottomColor: 'black',
-        borderBottomWidth: 1,
-      },
-
-
-   row: {
-       flexDirection: 'row',
-       paddingTop:10,
-
-      marginTop:10,
-      border:1,
-
-      marginBottom: 15,
-    },
-  title: {
-    fontSize: 22,
-    color: Colors.primaryColor,
-    fontWeight: '500',
-  },
-  profileImg: {
-      height: 35,
-      width: 35,
-      marginLeft:30,
-      marginBottom:10,
-      borderRadius: 50,
-    },
-    loginButton: {
-        backgroundColor: Colors.primaryColor,
-        padding: 20,
-        borderRadius: 20,
-        width: 100,
-
-        alignItems: 'center',
-        marginTop: 12,
-      },
-      login: {
-        color: Colors.white,
-        fontSize: 15,
-        fontWeight: '500',
-      },
-  textName: {
-  marginLeft:20,
-  paddingTop:5,
+  const GetImage =({source}) => {
+    if(source=="") {  return; }
+    else {  return ( <Image source={{uri:source}}  style={styles.avatar} />  )  }
   }
 
-});
+  const GetItem = ({item}) => {
+    return  (
+    <View style={styles.item_container}>
+      <View style={styles.item_avatar}>
+          <GetImage source={item.avatar} />
+      </View>
+      <TouchableHighlight style={styles.item_name} underlayColor='#eee' onPress={()=>{}}>
+          <Text style={styles.name}>{item.name}</Text>
+      </TouchableHighlight>
+    </View>
+    )
+  }
 
-export default FriendScreen;
+
+  return (
+    <View>
+      <Text onPress={()=>{console.log('followings: ',followings); console.log('sugguests: ',suggests)}}>FriendScreen</Text>
+      <SafeAreaView style={styles.container_area}>
+          <FlatList data={suggests} horizontal={false}
+              renderItem={({item}) =>(
+                <GetItem item ={item} />
+              )} />
+      </SafeAreaView>
+    </View>
+  )
+}
+const styles = StyleSheet.create({
+
+    container_area: {
+     
+      width:'100%',
+      height:'90%',
+
+    },
+
+    item_container: {
+      flexDirection:'row',
+      alignItems:'flex-start',
+      width:'100%',
+      padding: 20,
+     
+      
+    },
+    item_avatar: {
+     marginRight:20,
+    },
+    item_name: {
+      marginTop:10,
+    },
+
+    name: {
+      fontSize:16,
+    },
+    avatar: {
+      width:50,
+      height:50,
+      borderRadius:25,
+    }
+
+    
+})

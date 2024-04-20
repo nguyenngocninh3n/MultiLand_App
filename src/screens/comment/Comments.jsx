@@ -18,7 +18,7 @@ export default Comments = ({navigation,dataPost}) => {
         firestore().collection("comments").where('postID','==',dataPost.postID).onSnapshot((res) => {
           const comment_arr = []
           if(res != null) {
-            console.log('comments exists')
+          
             res.forEach(documentSnapshot => {
               comment_arr.push({
                 ...documentSnapshot.data(),
