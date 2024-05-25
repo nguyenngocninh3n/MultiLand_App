@@ -12,6 +12,10 @@ export default EditPost = ({ navigation,route}) => {
         await Fire.shared.editPost({postID: dataPost.postID, newContent: newContent});
         navigation.goBack();
     }
+    const GetImage =({source}) => {
+        if(source=="" || source == null) {   return;  }
+        else {   return (   <Image source={{uri:source}} style={styles.image}/>  )  }
+      }
 
     return(
         <View style={styles.container}>
@@ -20,7 +24,7 @@ export default EditPost = ({ navigation,route}) => {
             <TextInput textAlignVertical="top" multiline={true} style={styles.textInput} 
                        value={newContent}
                        onChangeText={setNewContent} />
-            <Image style={styles.image} source={{uri:dataPost.image}} />
+            <GetImage source={dataPost.image} />
             <TouchableOpacity onPress={onUpdatePost} style={styles.savePost}>
                 <Text  style={styles.saveText}>Lưu</Text>
             </TouchableOpacity>
